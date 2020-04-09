@@ -18,6 +18,8 @@ jobs:
 
     - name: codecov
       language: python
+      install:
+        - pip install pytest-cov
       script: pytest --cov=./
       # Push the results back to codecov
       after_success:
