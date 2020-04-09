@@ -10,15 +10,9 @@ jobs:
       - pip install pywavelets
       - pip install pytest
   # - "pypy3"  # currently Python 3.6.1
-    script: pytest -v op_tests.py prox_tests.py
-    
+    name: python
+      - script: pytest -v op_tests.py prox_tests.py
     name: codecov
-    language: python
-    python:
-      - "3.6"
-  # command to install dependencies
-    install:
-      - pip install pywavelets
-      - pip install pytest pytest-cov
+      - script: pytest --cov=./
+    
   # - "pypy3"  # currently Python 3.6.1
-    script: pytest --cov=./
