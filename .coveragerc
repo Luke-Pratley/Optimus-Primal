@@ -1,5 +1,5 @@
 [run]
 branch = True
-source = .
+source = $TRAVIS_BUILD_DIR
 omit =
     *tests*
