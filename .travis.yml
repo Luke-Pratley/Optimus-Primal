@@ -1,8 +1,4 @@
 # command to run tests
-language: python
-python:
-  - "3.6"
-  - "3.8"
 # command to install dependencies
 install:
   - pip install pywavelets
@@ -10,9 +6,18 @@ install:
   # - "pypy3"  # currently Python 3.6.1
 jobs:
   include:
-    - name: python
+    - language: python
+      python:
+        - "3.6"
       script: pytest -v op_tests.py prox_tests.py
+
+    - language: python
+      python:
+        - "3.8"
+      script: pytest -v op_tests.py prox_tests.py
+
     - name: codecov
+      language: python
       script: pytest --cov=./
       # Push the results back to codecov
       after_success:
