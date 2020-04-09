@@ -10,7 +10,8 @@ class identity:
         return x
     def adj_op(self, x):
         return x
-class function_wrapper(dir_op, adj_op):
+
+class function_wrapper:
     """
     Given direct and adjoint functions return linear operator
 
@@ -19,6 +20,8 @@ class function_wrapper(dir_op, adj_op):
     dir_op  - forward operator 
     adj_op  - adjoint operator
     """
+    self.dir_op = None
+    self.adj_op = None
     def __init__(self, dir_op, adj_op):
         self.dir_op = dir_op
         self.adj_op = adj_op
