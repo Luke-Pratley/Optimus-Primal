@@ -39,3 +39,65 @@ def test_diag_matrix_op():
     inp = np.random.normal(0, 10., (10))
     out = np.conj(A) * inp
     adjoint_operator(op, inp, out)
+
+def test_wav_op():
+    wav = "dirac"
+    levels = 3
+    shape = (128,)
+    op = operators.db_wavelets(wav, levels, shape)
+    inp = np.random.normal(0, 10., shape)
+    out = op.dir_op(inp)
+    forward_operator(op, inp, out)
+    inp = np.random.normal(0, 10., out.shape)
+    out = op.adj_op(inp)
+    adjoint_operator(op, inp, out)
+    buff1 = op.adj_op(op.dir_op(out))
+    assert np.allclose(out, buff1, 1e-6)
+    wav = "db1"
+    levels = 3
+    shape = (128,)
+    op = operators.db_wavelets(wav, levels, shape)
+    inp = np.random.normal(0, 10., shape)
+    out = op.dir_op(inp)
+    forward_operator(op, inp, out)
+    inp = np.random.normal(0, 10., out.shape)
+    out = op.adj_op(inp)
+    adjoint_operator(op, inp, out)
+    buff1 = op.adj_op(op.dir_op(out))
+    assert np.allclose(out, buff1, 1e-6)
+    wav = ["db1", "db2", "dirac"]
+    levels = 3
+    shape = (128,)
+    op = operators.dictionary(wav, levels, shape)
+    inp = np.random.normal(0, 10., shape)
+    out = op.dir_op(inp)
+    forward_operator(op, inp, out)
+    inp = np.random.normal(0, 10., out.shape)
+    out = op.adj_op(inp)
+    adjoint_operator(op, inp, out)
+    buff1 = op.adj_op(op.dir_op(out))
+    assert np.allclose(out, buff1, 1e-6)
+    wav = "db2"
+    levels = 3
+    shape = (128, 128)
+    op = operators.db_wavelets(wav, levels, shape)
+    inp = np.random.normal(0, 10., shape)
+    out = op.dir_op(inp)
+    forward_operator(op, inp, out)
+    inp = np.random.normal(0, 10., out.shape)
+    out = op.adj_op(inp)
+    adjoint_operator(op, inp, out)
+    buff1 = op.adj_op(op.dir_op(out))
+    assert np.allclose(out, buff1, 1e-6)
+    wav = ["db1", "db2", "dirac"]
+    levels = 3
+    shape = (128, 128)
+    op = operators.dictionary(wav, levels, shape)
+    inp = np.random.normal(0, 10., shape)
+    out = op.dir_op(inp)
+    forward_operator(op, inp, out)
+    inp = np.random.normal(0, 10., out.shape)
+    out = op.adj_op(inp)
+    adjoint_operator(op, inp, out)
+    buff1 = op.adj_op(op.dir_op(out))
+
