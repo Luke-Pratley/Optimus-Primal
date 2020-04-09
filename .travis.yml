@@ -23,7 +23,7 @@ jobs:
         - pip install pytest-cov codecov
         - pip install pywavelets pytest 
       script: 
-        - py.test  --cov-report term --cov=./
+        - py.test  --cov-report term --cov=optimusprimal
       # Push the results back to codecov
       after_success:
         - codecov
