@@ -1,19 +1,21 @@
-# command to run tests
-# command to install dependencies
-install:
-  - pip install pywavelets
-  - pip install pytest
-  # - "pypy3"  # currently Python 3.6.1
+os: osx
 jobs:
   include:
     - language: python
       python:
         - "3.6"
+      install:
+        - pip install pywavelets
+        - pip install pytest
+  # - "pypy3"  # currently Python 3.6.1
       script: pytest -v op_tests.py prox_tests.py
 
     - language: python
       python:
         - "3.8"
+      install:
+        - pip install pywavelets
+        - pip install pytest
       script: pytest -v op_tests.py prox_tests.py
 
     - name: codecov
