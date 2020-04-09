@@ -3,8 +3,8 @@ language: python
 python:
   - "3.6"
   - "3.8"
-  # command to install dependencies
-  install:
+# command to install dependencies
+install:
   - pip install pywavelets
   - pip install pytest
   # - "pypy3"  # currently Python 3.6.1
