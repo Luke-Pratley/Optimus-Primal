@@ -1,4 +1,4 @@
-import optimusprimal.prox_operators
+import optimusprimal.prox_operators as prox_operators
 import pytest
 
 import numpy as np
