@@ -1,3 +1,7 @@
 # Optimus Primal
 
-A light weight Forward Backward Primal Dual based solver for convex optimization problems.
+A light weight proximal splitting Forward Backward Primal Dual based solver for convex optimization problems. 
+
+The current version supports finding the minimum of f(x) + h(A x) + p(B x) + g(x), where f, h, and p are lower semi continuous and have proximal operators, and g is differentiable. A and B are linear operators.
+
+This code is made to be compatable with the [proximity operator repository](http://proximity-operator.net/index.html). We suggest that users read the tutorial [G. Chierchia, E. Chouzenoux, P. L. Combettes, and J.-C. Pesquet. "The Proximity Operator Repository. User's guide"](http://proximity-operator.net/download/guide.pdf).
