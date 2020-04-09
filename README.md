@@ -9,7 +9,7 @@ The current version supports finding the minimum of f(x) + h(A x) + p(B x) + g(x
 This code is made to be compatable with the [proximity operator repository](http://proximity-operator.net/index.html). We suggest that users read the tutorial [G. Chierchia, E. Chouzenoux, P. L. Combettes, and J.-C. Pesquet. "The Proximity Operator Repository. User's guide"](http://proximity-operator.net/download/guide.pdf).
 
 ## Requirements
-- Python > 3.8
+- Python >= 3.6
 - [PyWavelets](https://pywavelets.readthedocs.io/en/latest/)
 - Numpy
 ### Optional
