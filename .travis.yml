@@ -6,6 +6,7 @@ jobs:
       install:
         - pip install pywavelets
         - pip install pytest
+        - python setup.py build_ext
   # - "pypy3"  # currently Python 3.6.1
       script: pytest -v tests/*.py
 
@@ -15,6 +16,7 @@ jobs:
       install:
         - pip install pywavelets
         - pip install pytest
+        - python setup.py build_ext
       script: pytest -v tests/*.py
 
     - name: codecov
