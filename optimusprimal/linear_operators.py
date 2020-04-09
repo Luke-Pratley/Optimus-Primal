@@ -20,8 +20,8 @@ class function_wrapper:
     dir_op  - forward operator 
     adj_op  - adjoint operator
     """
-    self.dir_op = None
-    self.adj_op = None
+    dir_op = None
+    adj_op = None
     def __init__(self, dir_op, adj_op):
         self.dir_op = dir_op
         self.adj_op = adj_op
