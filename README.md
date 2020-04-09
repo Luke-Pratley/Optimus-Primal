@@ -1,5 +1,6 @@
 # Optimus Primal
 [![Build Status](https://travis-ci.org/Luke-Pratley/Optimus-Primal.svg?branch=master)](https://travis-ci.org/Luke-Pratley/Optimus-Primal)
+[![codecov](https://codecov.io/gh/Luke-Pratley/Optimus-Primal/branch/master/graph/badge.svg)](https://codecov.io/gh/Luke-Pratley/Optimus-Primal)
 
 A light weight proximal splitting Forward Backward Primal Dual based solver for convex optimization problems. 
 
