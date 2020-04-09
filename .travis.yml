@@ -20,7 +20,8 @@ jobs:
       language: python
       install:
         - pip install pytest-cov
-      script: coverage run -m pytest op_tests.py prox_tests.py && coverage report
+        - pip install pywavelets pytest
+      script: coverage run -m pytest && coverage report
       # Push the results back to codecov
       after_success:
         - codecov
