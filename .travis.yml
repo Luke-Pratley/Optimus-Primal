@@ -9,4 +9,4 @@ install:
   #  - pip install -r requirements.txt
     - pip install pywavelets
 # command to run tests
-script: pytest -v tests.py
+script: pytest -v op_tests.py prox_tests.py
