@@ -29,3 +29,13 @@ def test_matrix_op():
     inp = np.random.normal(0, 10., (10))
     out = np.conj(A.T) @ inp
     adjoint_operator(op, inp, out)
+
+def test_diag_matrix_op():
+    A = np.random.normal(0, 10., (10)) * 1j
+    op = operators.diag_matrix_operator(A)
+    inp = np.random.normal(0, 10., (10))
+    out = A * inp
+    forward_operator(op, inp, out)
+    inp = np.random.normal(0, 10., (10))
+    out = np.conj(A) * inp
+    adjoint_operator(op, inp, out)

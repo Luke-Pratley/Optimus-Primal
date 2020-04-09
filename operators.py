@@ -10,9 +10,9 @@ class identity:
     def adj_op(self, x):
         return x
 
-class diag_weights:
+class diag_matrix_operator:
     """
-    Applies diagonal weighting operator W * x
+    Applies diagonal matrix operator W * x
 
      INPUTS
     ========
