@@ -1,4 +1,4 @@
-import linear_operators
+import optimusprimal.linear_operators as linear_operators
 import pytest
 
 import numpy as np
