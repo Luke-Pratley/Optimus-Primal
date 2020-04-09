@@ -15,7 +15,7 @@ jobs:
       install:
         - pip install pywavelets
         - pip install pytest
-      script: pytest -v op_tests.py prox_tests.py
+      script: pytest -v tests/*.py
 
     - name: codecov
       language: python
