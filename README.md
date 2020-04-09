@@ -12,3 +12,5 @@ This code is made to be compatable with the [proximity operator repository](http
 - Python > 3.8
 - [PyWavelets](https://pywavelets.readthedocs.io/en/latest/)
 - Numpy
+### Optional
+- Matplotlib
