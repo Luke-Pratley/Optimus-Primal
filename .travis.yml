@@ -22,7 +22,8 @@ jobs:
       install:
         - pip install pytest-cov codecov
         - pip install pywavelets pytest 
-      script: pytest --cov=./
+      script: 
+        - py.test  --cov-report term --cov=./
       # Push the results back to codecov
       after_success:
         - codecov
