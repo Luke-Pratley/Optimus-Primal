@@ -1,12 +1,30 @@
-language: python
-python:
-  - "3.6"
-  - "3.8"
-  # PyPy versions
+jobs:
+  include:
+    - language: python
+      python:
+        - "3.6"
+      install:
+        - pip install pywavelets
+        - pip install pytest
   # - "pypy3"  # currently Python 3.6.1
-# command to install dependencies
-install:
-  #  - pip install -r requirements.txt
-    - pip install pywavelets
-# command to run tests
-script: pytest -v op_tests.py prox_tests.py
+      script: pytest -v tests/*.py
+
+    - language: python
+      python:
+        - "3.8"
+      install:
+        - pip install pywavelets
+        - pip install pytest
+      script: pytest -v tests/*.py
+
+    - name: codecov
+      language: python
+      install:
+        - pip install pytest-cov codecov
+        - pip install pywavelets pytest 
+      script: 
+        - py.test tests/*.py  --cov-report term --cov=optimusprimal --collect-only 
+      # Push the results back to codecov
+      after_success:
+        - codecov
+    

@@ -1,4 +1,4 @@
-import Empty
+import optimusprimal.Empty as Empty
 import numpy as np
 import time
 

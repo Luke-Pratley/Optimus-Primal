@@ -1,4 +1,4 @@
-import linear_operators
+import optimusprimal.linear_operators as linear_operators
 import numpy as np
 
 class l2_ball:

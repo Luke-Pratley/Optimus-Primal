@@ -1,6 +1,6 @@
-import prox_operators
-import linear_operators
-import primal_dual
+import optimusprimal.prox_operators as prox_operators
+import optimusprimal.linear_operators as linear_operators
+import optimusprimal.primal_dual as primal_dual
 import numpy as np
 
 options = {'tol': 1e-4, 'iter': 5000, 'update_iter': 50, 'record_iters': False}
