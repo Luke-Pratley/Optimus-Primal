@@ -1,7 +1,7 @@
 import operators
 import numpy as np
 
-class L2_Ball:
+class l2_ball:
     """
     This class computes the proximity operator of the l2 ball
 
@@ -43,11 +43,11 @@ class L2_Ball:
     def fun(self, x):
         return 0;
     def dir_op(self, x):
-        return self.Phi.forward(x)
+        return self.Phi.dir_op(x)
     def adj_op(self, x):
-        return self.Phi.adjoint(x)
+        return self.Phi.adj_op(x)
 
-class l1_norm_prox :
+class l1_norm:
     
     """
     This class computes the proximity operator of the l2 ball
@@ -65,7 +65,7 @@ class l1_norm_prox :
     """
     
     
-    def __init__(self, gamma, Psi):
+    def __init__(self, gamma, Psi = None):
 
         if np.any( gamma <= 0 ):
             raise Exception("'gamma' must be positive")
@@ -73,10 +73,10 @@ class l1_norm_prox :
         self.gamma = gamma
         self.beta = 1.
 
-        if(Phi is None):
-            self.Phi = operators.identity()
+        if(Psi is None):
+            self.Psi = operators.identity()
         else:
-            self.Phi = Phi
+            self.Psi = Psi
 
     
     def prox(self, x, tau):
@@ -93,7 +93,14 @@ class l1_norm_prox :
         return self.Psi.adj_op(x)
         
         
- class positive_prox:
+class positive_prox:
+    """
+    This class computes the proximity operator of the indicator function for positivity
+
+                        f(x) = (Re{x} >= 0) ? 0. : infty
+    it returns the projection.
+
+    """
     
     def __init__(self):
         self.beta = 1.
@@ -111,5 +118,29 @@ class l1_norm_prox :
     def adj_op(self, x):
         return x
         
+class real_prox:
+    """
+    This class computes the proximity operator of the indicator function for reality
+
+                        f(x) = (Re{x} == x) ? 0. : infty
+    it returns the projection.
+
+    """
+    
+    def __init__(self):
+        self.beta = 1.
+
+
+    
+    def prox(self, x, tau):
+        return np.real(x)
+        
+    def fun(self, x):
+        return 0.;
+    
+    def dir_op(self, x):
+        return x
+    def adj_op(self, x):
+        return x
         
     
