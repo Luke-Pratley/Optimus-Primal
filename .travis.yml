@@ -7,7 +7,7 @@ jobs:
         - pip install pywavelets
         - pip install pytest
   # - "pypy3"  # currently Python 3.6.1
-      script: pytest -v op_tests.py prox_tests.py
+      script: pytest -v tests/*.py
 
     - language: python
       python:
@@ -23,7 +23,7 @@ jobs:
         - pip install pytest-cov codecov
         - pip install pywavelets pytest 
       script: 
-        - py.test  --cov-report term --cov=optimusprimal
+        - py.test tests/*.py  --cov-report term --cov=optimusprimal --collect-only 
       # Push the results back to codecov
       after_success:
         - codecov
