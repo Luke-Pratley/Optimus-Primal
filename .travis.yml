@@ -1,0 +1,12 @@
+language: python
+python:
+  - "3.6"
+  - "3.8"
+  # PyPy versions
+  # - "pypy3"  # currently Python 3.6.1
+# command to install dependencies
+install:
+  #  - pip install -r requirements.txt
+    - pip install pywavelets
+# command to run tests
+script: pytest -v op_tests.py prox_tests.py
