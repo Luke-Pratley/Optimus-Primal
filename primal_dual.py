@@ -14,14 +14,14 @@ def FBPD(x_init, options = None, f=None, h=None, p=None, g=None):
     if options is None: options = {'tol': 1e-4, 'iter': 500, 'update_iter': 100, 'record_iters': False}
 
     # checking minimum requrements for inputs
-    assert hasattr(f, Empty.EmptyProx().prox)
-    assert hasattr(h, Empty.EmptyProx().prox)
-    assert hasattr(h, Empty.EmptyProx().dir_op)
-    assert hasattr(h, Empty.EmptyProx().adj_op)
-    assert hasattr(p, Empty.EmptyProx().prox)
-    assert hasattr(p, Empty.EmptyProx().dir_op)
-    assert hasattr(p, Empty.EmptyProx().adj_op)
-    assert hasattr(g, Empty.EmptyGrad().grad)
+    assert hasattr(f, 'prox')
+    assert hasattr(h, 'prox')
+    assert hasattr(h, 'dir_op')
+    assert hasattr(h, 'adj_op')
+    assert hasattr(p, 'prox')
+    assert hasattr(p, 'dir_op')
+    assert hasattr(p, 'adj_op')
+    assert hasattr(g, 'grad')
 
     # algorithmic parameters
     tol      = options['tol']

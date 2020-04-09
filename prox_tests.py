@@ -1,5 +1,4 @@
 import prox_operators
-import operators
 import pytest
 
 import numpy as np
@@ -18,6 +17,7 @@ def test_l2_ball_op():
     out = inp
     op = prox_operators.l2_ball(epsilon, inp * 0.)
     assert np.allclose(op.prox(inp, 1), out, 1e-6)
+
 
 def test_l1_norm_op():
     gamma = 2

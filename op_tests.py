@@ -1,4 +1,4 @@
-import operators
+import linear_operators
 import pytest
 
 import numpy as np
@@ -9,7 +9,7 @@ def adjoint_operator(op, inp, result):
     assert np.all(op.adj_op(inp) == result)
 
 def test_id_op():
-    id_op = operators.identity()
+    id_op = linear_operators.identity()
     inp = np.random.normal(0, 10., (10, 10))
     out = inp
     forward_operator(id_op, inp, out)
@@ -21,7 +21,7 @@ def test_id_op():
 
 def test_matrix_op():
     A = np.random.normal(0, 10., (10, 5)) * 1j
-    op = operators.matrix_operator(A)
+    op = linear_operators.matrix_operator(A)
     inp = np.random.normal(0, 10., (5))
     out = A @ inp
     forward_operator(op, inp, out)
@@ -31,7 +31,7 @@ def test_matrix_op():
 
 def test_diag_matrix_op():
     A = np.random.normal(0, 10., (10)) * 1j
-    op = operators.diag_matrix_operator(A)
+    op = linear_operators.diag_matrix_operator(A)
     inp = np.random.normal(0, 10., (10))
     out = A * inp
     forward_operator(op, inp, out)
@@ -43,7 +43,7 @@ def test_wav_op():
     wav = "dirac"
     levels = 3
     shape = (128,)
-    op = operators.db_wavelets(wav, levels, shape)
+    op = linear_operators.db_wavelets(wav, levels, shape)
     inp = np.random.normal(0, 10., shape)
     out = op.dir_op(inp)
     forward_operator(op, inp, out)
@@ -55,7 +55,7 @@ def test_wav_op():
     wav = "db1"
     levels = 3
     shape = (128,)
-    op = operators.db_wavelets(wav, levels, shape)
+    op = linear_operators.db_wavelets(wav, levels, shape)
     inp = np.random.normal(0, 10., shape)
     out = op.dir_op(inp)
     forward_operator(op, inp, out)
@@ -67,7 +67,7 @@ def test_wav_op():
     wav = ["db1", "db2", "dirac"]
     levels = 3
     shape = (128,)
-    op = operators.dictionary(wav, levels, shape)
+    op = linear_operators.dictionary(wav, levels, shape)
     inp = np.random.normal(0, 10., shape)
     out = op.dir_op(inp)
     forward_operator(op, inp, out)
@@ -79,7 +79,7 @@ def test_wav_op():
     wav = "db2"
     levels = 3
     shape = (128, 128)
-    op = operators.db_wavelets(wav, levels, shape)
+    op = linear_operators.db_wavelets(wav, levels, shape)
     inp = np.random.normal(0, 10., shape)
     out = op.dir_op(inp)
     forward_operator(op, inp, out)
@@ -91,7 +91,7 @@ def test_wav_op():
     wav = ["db1", "db2", "dirac"]
     levels = 3
     shape = (128, 128)
-    op = operators.dictionary(wav, levels, shape)
+    op = linear_operators.dictionary(wav, levels, shape)
     inp = np.random.normal(0, 10., shape)
     out = op.dir_op(inp)
     forward_operator(op, inp, out)

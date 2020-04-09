@@ -1,4 +1,4 @@
-import operators
+import linear_operators
 import numpy as np
 
 class l2_ball:
@@ -27,7 +27,7 @@ class l2_ball:
         self.data = data
         self.beta = 1.
         if(Phi is None):
-            self.Phi = operators.identity()
+            self.Phi = linear_operators.identity()
         else:
             self.Phi = Phi
 
@@ -74,7 +74,7 @@ class l1_norm:
         self.beta = 1.
 
         if(Psi is None):
-            self.Psi = operators.identity()
+            self.Psi = linear_operators.identity()
         else:
             self.Psi = Psi
 
