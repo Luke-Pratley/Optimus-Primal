@@ -1,11 +1,11 @@
 import numpy as np
-import operators
+import optimusprimal.linear_operators as linear_operators
 
-class L2_Grad:
+class l2_norm:
     """
     This class computes the gradiant operator of the l2 norm function
 
-                        f(x) = ||y - Wx||^2/2/sigma^2
+                        f(x) = ||y - Phi x||^2/2/sigma^2
 
     When the input 'x' is an array. 'y' is a data vector, `sigma` is a scalar uncertainty
 
@@ -15,6 +15,7 @@ class L2_Grad:
      x         - ND array
      sigma   - uncertainty
      data      - data that that centres the l2 norm
+     Phi     - linear operator
     """
     def __init__(self, sigma, data, Phi):
 
@@ -24,7 +25,7 @@ class L2_Grad:
         self.data = data
         self.beta = 1.
         if(np.any(Phi is None)):
-            self.Phi = operators.identity
+            self.Phi = linear_operators.identity
         else:
             self.Phi = Phi
 

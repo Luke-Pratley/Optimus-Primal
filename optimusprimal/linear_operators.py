@@ -11,6 +11,21 @@ class identity:
     def adj_op(self, x):
         return x
 
+class function_wrapper:
+    """
+    Given direct and adjoint functions return linear operator
+
+     INPUTS
+    ========
+    dir_op  - forward operator 
+    adj_op  - adjoint operator
+    """
+    dir_op = None
+    adj_op = None
+    def __init__(self, dir_op, adj_op):
+        self.dir_op = dir_op
+        self.adj_op = adj_op
+
 class diag_matrix_operator:
     """
     Applies diagonal matrix operator W * x
