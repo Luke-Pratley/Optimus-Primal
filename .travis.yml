@@ -7,11 +7,14 @@ python:
   install:
   - pip install pywavelets
   - pip install pytest
+  # - "pypy3"  # currently Python 3.6.1
 jobs:
   include:
     - name: python
       script: pytest -v op_tests.py prox_tests.py
     - name: codecov
       script: pytest --cov=./
+      # Push the results back to codecov
+      after_success:
+        - codecov
     
-  # - "pypy3"  # currently Python 3.6.1
