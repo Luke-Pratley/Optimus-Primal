@@ -1,4 +1,3 @@
-os: osx
 jobs:
   include:
     - language: python
@@ -21,9 +20,9 @@ jobs:
     - name: codecov
       language: python
       install:
-        - pip install pytest-cov
-        - pip install pywavelets pytest
-      script: coverage run -m pytest && coverage report
+        - pip install pytest-cov codecov
+        - pip install pywavelets pytest 
+      script: pytest --cov=./
       # Push the results back to codecov
       after_success:
         - codecov
