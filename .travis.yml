@@ -1,14 +1,14 @@
 # command to run tests
+language: python
+python:
+  - "3.6"
+  - "3.8"
+  # command to install dependencies
+  install:
+  - pip install pywavelets
+  - pip install pytest
 jobs:
   include:
-    language: python
-    python:
-      - "3.6"
-      - "3.8"
-  # command to install dependencies
-    install:
-      - pip install pywavelets
-      - pip install pytest
     - name: python
       script: pytest -v op_tests.py prox_tests.py
     - name: codecov
