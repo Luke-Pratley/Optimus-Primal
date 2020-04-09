@@ -130,8 +130,6 @@ class real_prox:
     def __init__(self):
         self.beta = 1.
 
-
-    
     def prox(self, x, tau):
         return np.real(x)
         
