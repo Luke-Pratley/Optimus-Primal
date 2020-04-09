@@ -10,6 +10,18 @@ class identity:
         return x
     def adj_op(self, x):
         return x
+class function_wrapper(dir_op, adj_op):
+    """
+    Given direct and adjoint functions return linear operator
+
+     INPUTS
+    ========
+    dir_op  - forward operator 
+    adj_op  - adjoint operator
+    """
+    def __init__(self, dir_op, adj_op):
+        self.dir_op = dir_op
+        self.adj_op = adj_op
 
 class diag_matrix_operator:
     """
