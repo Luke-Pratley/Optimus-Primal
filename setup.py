@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="optimiusprimal",
     version="0.0.1",
-    author="Luke Pratley"
+    author="Luke Pratley",
     author_email="luke.pratley@gmail.com",
     description="Convex Optimization Primal Dual Solver",
     long_description=long_description,
