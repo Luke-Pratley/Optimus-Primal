@@ -54,6 +54,8 @@ class diag_matrix_operator:
     
     
     def __init__(self, W):
+        if(len(w.shape) >1):
+            raise Exception("'W' must be a vector for constructing diagonal weights.")
         self.W = W
     
     def dir_op(self, x):
