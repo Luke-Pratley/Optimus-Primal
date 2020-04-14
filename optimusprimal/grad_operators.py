@@ -23,7 +23,7 @@ class l2_norm:
             raise Exception("'sigma' must be positive")
         self.sigma = sigma
         self.data = data
-        self.beta = 1.
+        self.beta = 1./sigma**2
         if(np.any(Phi is None)):
             self.Phi = linear_operators.identity
         else:

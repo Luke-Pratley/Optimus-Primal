@@ -1,6 +1,6 @@
 import optimusprimal.linear_operators as linear_operators
 import pytest
-
+from numpy import linalg as LA
 import numpy as np
 
 def forward_operator(op, inp, result):
@@ -8,6 +8,14 @@ def forward_operator(op, inp, result):
 def adjoint_operator(op, inp, result):
     assert np.all(op.adj_op(inp) == result)
 
+def test_power_method():
+    A = np.diag(np.random.normal(0, 10., (10)))
+    op = linear_operators.matrix_operator(A)
+    inp = np.random.normal(0, 10., (10)) * 0 + 1
+    val, x_e = linear_operators.power_method(op, inp)
+    w, v = LA.eig(A)
+    expected = np.max(np.abs(w))**2
+    assert np.allclose(val, expected, 1e-3)
 def test_id_op():
     id_op = linear_operators.identity()
     inp = np.random.normal(0, 10., (10, 10))

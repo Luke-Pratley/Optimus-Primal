@@ -1,5 +1,22 @@
 import numpy as np
 import pywt
+
+def power_method(op, x_init, tol = 1e-3, iters = 1000):
+    """
+    Power method which returns the operator norm^2 and the eigen vector
+    """
+    x_old = x_init
+    val_old = 1
+    for i in range(iters):
+        x_new = op.adj_op(op.dir_op(x_old))
+        val_new = np.linalg.norm(x_new)
+        if np.abs(val_new - val_old) < tol * val_old:
+            break
+        x_old = x_new / val_new 
+        val_old = val_new
+    return val_new, x_new
+
+
 class identity:
     """
     Identity operator
