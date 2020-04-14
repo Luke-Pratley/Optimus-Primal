@@ -12,7 +12,7 @@ def test_power_method():
     A = np.diag(np.random.normal(0, 10., (10)))
     op = linear_operators.matrix_operator(A)
     inp = np.random.normal(0, 10., (10)) * 0 + 1
-    val, x_e = linear_operators.power_method(op, inp)
+    val, x_e = linear_operators.power_method(op, inp, 1e-5, 10000)
     w, v = LA.eig(A)
     expected = np.max(np.abs(w))**2
     assert np.allclose(val, expected, 1e-3)
