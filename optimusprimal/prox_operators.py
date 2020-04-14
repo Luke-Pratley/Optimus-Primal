@@ -92,7 +92,53 @@ class l1_norm:
     def adj_op(self, x):
         return self.Psi.adj_op(x)
         
+
+class l2_square_norm:
+    
+    """
+    This class computes the proximity operator of the l2 squared
+
+                        f(x) = 0.5/sigma^2 * ||Psi x||_2^2
+
+    When the input 'x' is an array. 0.5/sigma^2 is a regularization term. Psi is an operator.
+
+
+     INPUTS
+    ========
+     x         - ND array
+     sigma     - regularization parameter
+     Phi       - Measurement/Weighting operator
+    """
+    
+    
+    def __init__(self, sigma, Psi = None):
+
+        if np.any( sigma <= 0 ):
+            raise Exception("'gamma' must be positive")
+
+        self.sigma = sigma
+        self.beta = 1.
+
+        if(Psi is None):
+            self.Psi = linear_operators.identity()
+        else:
+            self.Psi = Psi
+
+    
+    def prox(self, x, tau):
+        return x/(tau/self.sigma**2 + 1.);
         
+        
+        
+    def fun(self, x):
+        return np.sum(np.abs(x)**2/(2. * self.sigma**2));
+    
+    def dir_op(self, x):
+        return self.Psi.dir_op(x)
+    def adj_op(self, x):
+        return self.Psi.adj_op(x)
+
+
 class positive_prox:
     """
     This class computes the proximity operator of the indicator function for positivity
