@@ -43,6 +43,14 @@ class function_wrapper:
         self.dir_op = dir_op
         self.adj_op = adj_op
 
+class fft_operator:
+    """
+    Applies nd fft operator to nd signal
+
+    """
+    def __init__(self):
+        self.dir_op = np.fft.fftn
+        self.adj_op = np.fft.ifftn
 class diag_matrix_operator:
     """
     Applies diagonal matrix operator W * x
@@ -98,12 +106,16 @@ class db_wavelets:
     def dir_op(self, x):
         if (self.wav == "dirac"):
             return np.ravel(x)
+        if (self.wav == "fourier"):
+            return np.ravel(np.fft.fftn(x))
         coeffs = pywt.wavedecn(x, wavelet=self.wav, level=self.levels, mode ='periodic')
         arr, self.coeff_slices, self.coeff_shapes = pywt.ravel_coeffs(coeffs)
         return arr
     def adj_op(self, x):
         if (self.wav == "dirac"):
             return np.reshape(x,self.shape)
+        if (self.wav == "fourier"):
+            return np.fft.ifftn(np.reshape(x, self.shape))
         coeffs_from_arr = pywt.unravel_coeffs(x, self.coeff_slices, self.coeff_shapes, output_format='wavedecn')
         return pywt.waverecn(coeffs_from_arr, wavelet=self.wav, mode ='periodic')
 
