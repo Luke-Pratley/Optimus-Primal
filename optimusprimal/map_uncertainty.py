@@ -1,23 +1,26 @@
 import numpy as np
 
 
-def bisection_method_credible_interval(
+def bisection_method(
         objective_function, start_interval, iters, tol):
     """Bisection method for finding credible interval."""
 
     eta1 = start_interval[0]
     eta2 = start_interval[1]
     obj3 = objective_function(eta2)
+    if(np.allclose(eta1, eta2, 1e-12)):
+        return eta1
     if(np.sign(objective_function(eta1)) == np.sign(objective_function(eta2))):
         print('eta1 and eta2 have same sign.')
+        val = np.argmin(np.abs([eta1, eta2]))
+        return [eta1, eta2][val]
     for i in range(int(iters)):
         obj1 = objective_function(eta1)
         eta3 = (eta2 + eta1) * 0.5
         obj3 = objective_function(eta3)
-        if(np.abs(obj3) < tol or np.abs(obj1) < tol):
-            return eta3
-        if(np.abs(eta1 - eta2) < 1e-12):
-            return eta3
+        if(np.abs(eta1 - eta3)/np.abs(eta3) < tol):
+            if(np.abs(obj3) < tol):
+                return eta3
         if(np.sign(obj1) == np.sign(obj3)):
             eta1 = eta3
         else:
@@ -33,6 +36,7 @@ def create_credible_region(
         bound,
         iters,
         tol,
+        bottom,
         top):
     """Bisection method for finding credible interval."""
 
@@ -48,19 +52,19 @@ def create_credible_region(
             for j in range(dsizex):
                 mask = np.roll(np.roll(region, shift=i * region_size,
                                        axis=0), shift=j * region_size, axis=1)
-                x_mean = np.mean(np.ravel(x_sol[(mask.astype(bool))]))
-                mean[i, j] = x_mean
+                x_sum = np.sum(np.ravel(x_sol[(mask.astype(bool))]))
+                mean[i, j] = x_sum
                 def obj(eta): return objective_function(
                     x_sol * (1. - mask) + eta * mask) - bound
-                error_p[i, j] = bisection_method_credible_interval(
+                error_p[i, j] = bisection_method(
                     obj, [0, top], iters, tol)
 
                 def obj(eta): return objective_function(
                     x_sol * (1. - mask) - eta * mask) - bound
                 error_m[i, j] = - \
-                    bisection_method_credible_interval(
-                        obj, [0, top], iters, tol)
-                print(i, j, (error_p[i, j], error_m[i, j]), x_mean)
+                    bisection_method(
+                        obj, [0, -bottom], iters, tol)
+                print(i, j, (error_p[i, j], error_m[i, j]), x_sum)
     else:
         region[:region_size] = 1.
         dsizey = int(x_sol.shape[0] / region_size)
@@ -69,16 +73,16 @@ def create_credible_region(
         mean = np.zeros((dsizey))
         for i in range(dsizey):
             mask = np.roll(region, shift=i * region_size, axis=0)
-            x_mean = np.mean(np.ravel(x_sol[(mask.astype(bool))]))
-            mean[i] = x_mean
+            x_sum = np.sum(np.ravel(x_sol[(mask.astype(bool))]))
+            mean[i] = x_sum
             def obj(eta): return objective_function(
                 x_sol * (1. - mask) + eta * mask) - bound
-            error_p[i] = bisection_method_credible_interval(
+            error_p[i] = bisection_method(
                 obj, [0, top], iters, tol)
 
             def obj(eta): return objective_function(
                 x_sol * (1. - mask) - eta * mask) - bound
             error_m[i] = - \
-                bisection_method_credible_interval(obj, [0, top], iters, tol)
-            print(i, (error_p[i], error_m[i]), x_mean)
+                bisection_method(obj, [0, -bottom], iters, tol)
+            print(i, (error_p[i], error_m[i]), x_sum)
     return error_p, error_m, mean
