@@ -44,4 +44,5 @@ jobs:
         - pip install --upgrade autopep8
       script: 
         - autopep8 --in-place --aggressive --aggressive optimusprimal/*.py
+        - git diff
         - 'if [[ `git status --porcelain` ]]; then return 1 fi'
