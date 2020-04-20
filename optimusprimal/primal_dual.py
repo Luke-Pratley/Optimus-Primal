@@ -35,7 +35,7 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
     update_iter = options['update_iter']
     record_iters = options['record_iters']
     # step-sizes
-    tau = 0.5/3.
+    tau = 0.5 / 3.
     sigmah = 1.
     sigmap = 1.
     # initialization
@@ -53,15 +53,15 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
         t = time.time()
         # primal forward-backward step
         x_old = x
-        x = x - tau * (g.grad(x)/g.beta/2. + h.adj_op(y) /
-                       h.beta + p.adj_op(z)/p.beta)
+        x = x - tau * (g.grad(x) / g.beta / 2. + h.adj_op(y) /
+                       h.beta + p.adj_op(z) / p.beta)
         x = f.prox(x, tau)
         # dual forward-backward step
-        y = y + sigmah * h.dir_op(2*x - x_old)
-        y = y - sigmah * h.prox(y/sigmah, 1./sigmah)
+        y = y + sigmah * h.dir_op(2 * x - x_old)
+        y = y - sigmah * h.prox(y / sigmah, 1. / sigmah)
 
-        z = z + sigmap * p.dir_op(2*x - x_old)
-        z = z - sigmap * p.prox(z/sigmap, 1./sigmap)
+        z = z + sigmap * p.dir_op(2 * x - x_old)
+        z = z - sigmap * p.prox(z / sigmap, 1. / sigmap)
         # time and criterion
         if(record_iters):
             timing[it] = time.time() - t
@@ -73,11 +73,17 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
             break
         if(update_iter >= 0):
             if(it % update_iter == 0):
-                print('[PD] ' + str(it)+' out of '+str(max_iter)+' iterations; tol = ' +
-                      str(np.linalg.norm(x - x_old) / np.linalg.norm(x_old)))
+                print('[PD] ' +
+                      str(it) +
+                      ' out of ' +
+                      str(max_iter) +
+                      ' iterations; tol = ' +
+                      str(np.linalg.norm(x -
+                                         x_old) /
+                          np.linalg.norm(x_old)))
 
-    criter = criter[0:it+1]
-    timing = np.cumsum(timing[0:it+1])
+    criter = criter[0:it + 1]
+    timing = np.cumsum(timing[0:it + 1])
     solution = x
     diagnostics = {'max_iter': it, 'times': timing, 'Obj_vals': criter}
     return solution, diagnostics

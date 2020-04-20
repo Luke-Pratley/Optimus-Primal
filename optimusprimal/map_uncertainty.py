@@ -1,7 +1,8 @@
 import numpy as np
 
 
-def bisection_method_credible_interval(objective_function, start_interval, iters, tol):
+def bisection_method_credible_interval(
+        objective_function, start_interval, iters, tol):
     """Bisection method for finding credible interval."""
 
     eta1 = start_interval[0]
@@ -25,14 +26,21 @@ def bisection_method_credible_interval(objective_function, start_interval, iters
     return eta3
 
 
-def create_credible_region(x_sol, region_size, objective_function, bound, iters, tol, top):
+def create_credible_region(
+        x_sol,
+        region_size,
+        objective_function,
+        bound,
+        iters,
+        tol,
+        top):
     """Bisection method for finding credible interval."""
 
     region = np.zeros(x_sol.shape)
     if len(x_sol.shape) > 1:
         region[:region_size, :region_size] = 1.
         dsizey, dsizex = int(
-            x_sol.shape[0]/region_size), int(x_sol.shape[1]/region_size)
+            x_sol.shape[0] / region_size), int(x_sol.shape[1] / region_size)
         error_p = np.zeros((dsizey, dsizex))
         error_m = np.zeros((dsizey, dsizex))
         mean = np.zeros((dsizey, dsizex))
@@ -55,7 +63,7 @@ def create_credible_region(x_sol, region_size, objective_function, bound, iters,
                 print(i, j, (error_p[i, j], error_m[i, j]), x_mean)
     else:
         region[:region_size] = 1.
-        dsizey = int(x_sol.shape[0]/region_size)
+        dsizey = int(x_sol.shape[0] / region_size)
         error_p = np.zeros((dsizey))
         error_m = np.zeros((dsizey))
         mean = np.zeros((dsizey))

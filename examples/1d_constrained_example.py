@@ -10,7 +10,7 @@ output_dir = 'output/'
 
 options = {'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False}
 ISNR = 20.
-sigma = 10**(-ISNR/20.)
+sigma = 10**(-ISNR / 20.)
 size = 1024
 epsilon = np.sqrt(size + 2. * np.sqrt(size)) * sigma
 x = np.linspace(0, 1 * np.pi, size)
@@ -40,4 +40,4 @@ plt.legend(['data', 'true', 'fit'])
 SNR = np.log10(np.sqrt(np.sum(np.abs(x)**2)) /
                np.sqrt(np.sum(np.abs(x - z)**2))) * 20.
 plt.title('SNR = ' + str(SNR))
-plt.savefig(output_dir+'1d_constrained_example.png')
+plt.savefig(output_dir + '1d_constrained_example.png')

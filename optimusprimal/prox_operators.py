@@ -79,7 +79,8 @@ class l1_norm:
             self.Psi = Psi
 
     def prox(self, x, tau):
-        return np.maximum(0, np.abs(x) - self.gamma * tau) * np.exp(complex(0, 1) * np.angle(x))
+        return np.maximum(0, np.abs(x) - self.gamma * tau) * \
+            np.exp(complex(0, 1) * np.angle(x))
 
     def fun(self, x):
         return np.abs(self.gamma * x).sum()
@@ -121,10 +122,10 @@ class l2_square_norm:
             self.Psi = Psi
 
     def prox(self, x, tau):
-        return x/(tau/self.sigma**2 + 1.)
+        return x / (tau / self.sigma**2 + 1.)
 
     def fun(self, x):
-        return np.sum(np.abs(x)**2/(2. * self.sigma**2))
+        return np.sum(np.abs(x)**2 / (2. * self.sigma**2))
 
     def dir_op(self, x):
         return self.Psi.dir_op(x)

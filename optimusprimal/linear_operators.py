@@ -120,7 +120,10 @@ class db_wavelets:
             return np.fft.ifftn(np.reshape(x, self.shape))
         coeffs_from_arr = pywt.unravel_coeffs(
             x, self.coeff_slices, self.coeff_shapes, output_format='wavedecn')
-        return pywt.waverecn(coeffs_from_arr, wavelet=self.wav, mode='periodic')
+        return pywt.waverecn(
+            coeffs_from_arr,
+            wavelet=self.wav,
+            mode='periodic')
 
 
 class dictionary:

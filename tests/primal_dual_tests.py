@@ -11,7 +11,7 @@ def test_l1_constrained():
     options = {'tol': 1e-5, 'iter': 5000,
                'update_iter': 50, 'record_iters': False}
     ISNR = 20.
-    sigma = 10**(-ISNR/20.)
+    sigma = 10**(-ISNR / 20.)
     size = 1024
     epsilon = np.sqrt(size + 2. * np.sqrt(size)) * sigma
     x = np.linspace(0, 1 * np.pi, size)
@@ -40,7 +40,7 @@ def test_l1_unconstrained():
     options = {'tol': 1e-5, 'iter': 5000,
                'update_iter': 50, 'record_iters': False}
     ISNR = 20.
-    sigma = 10**(-ISNR/20.)
+    sigma = 10**(-ISNR / 20.)
     size = 1024
     epsilon = np.sqrt(size + 2. * np.sqrt(size)) * sigma
     x = np.linspace(0, 1 * np.pi, size)

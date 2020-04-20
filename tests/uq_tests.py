@@ -22,10 +22,18 @@ def test_bisection():
     tol = 1e-12
     error_p, error_m, mean = map_uncertainty.create_credible_region(
         x_sol, region_size, obj, bound, iters, tol, 5)
-    assert np.allclose(error_p.shape, (128/region_size, 128/region_size), 1e-3)
-    assert np.allclose(error_m.shape, (128/region_size, 128/region_size), 1e-3)
-    assert np.allclose(error_p, 2./region_size, 1e-3)
-    assert np.allclose(error_m, -2./region_size, 1e-3)
+    assert np.allclose(
+        error_p.shape,
+        (128 / region_size,
+         128 / region_size),
+        1e-3)
+    assert np.allclose(
+        error_m.shape,
+        (128 / region_size,
+         128 / region_size),
+        1e-3)
+    assert np.allclose(error_p, 2. / region_size, 1e-3)
+    assert np.allclose(error_m, -2. / region_size, 1e-3)
     assert np.allclose(mean, 0., 1e-12)
     x_sol = np.zeros((128, ))
     region_size = 16
@@ -35,7 +43,7 @@ def test_bisection():
     tol = 1e-12
     error_p, error_m, mean = map_uncertainty.create_credible_region(
         x_sol, region_size, obj, bound, iters, tol, 5)
-    assert np.allclose(error_p.shape, (128/region_size, ), 1e-3)
-    assert np.allclose(error_m.shape, (128/region_size, ), 1e-3)
-    assert np.allclose(error_p, 2./np.sqrt(region_size), 1e-3)
-    assert np.allclose(error_m, -2./np.sqrt(region_size), 1e-3)
+    assert np.allclose(error_p.shape, (128 / region_size, ), 1e-3)
+    assert np.allclose(error_m.shape, (128 / region_size, ), 1e-3)
+    assert np.allclose(error_p, 2. / np.sqrt(region_size), 1e-3)
+    assert np.allclose(error_m, -2. / np.sqrt(region_size), 1e-3)
