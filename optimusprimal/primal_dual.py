@@ -36,10 +36,6 @@ def FBPD(x_init, options = None, f=None, h=None, p=None, g=None):
     x = x_init
     y = h.dir_op(x)
     z = p.dir_op(x)
-    print('tau = ', tau);
-    print('beta = ', g.beta);
-    print('sigma_h = ', h.beta);
-    print('sigma_p = ', p.beta);
     print('Running Forward Backward Primal Dual');
 
     timing = np.zeros(max_iter)
