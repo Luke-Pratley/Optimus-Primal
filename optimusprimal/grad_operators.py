@@ -1,9 +1,9 @@
 import numpy as np
 import optimusprimal.linear_operators as linear_operators
 
+
 class l2_norm:
-    """
-    This class computes the gradiant operator of the l2 norm function
+    """This class computes the gradiant operator of the l2 norm function.
 
                         f(x) = ||y - Phi x||^2/2/sigma^2
 
@@ -17,6 +17,7 @@ class l2_norm:
      data      - data that that centres the l2 norm
      Phi     - linear operator
     """
+
     def __init__(self, sigma, data, Phi):
 
         if np.any(sigma <= 0):
@@ -29,10 +30,8 @@ class l2_norm:
         else:
             self.Phi = Phi
 
-
     def grad(self, x):
         return self.Phi.adj_op((self.Phi.dir_op(x) - self.data))/self.sigma**2
 
     def fun(self, x):
-        return np.sum(np.abs(self.data  - self.Phi.dir_op(x))**2.)/(2 * self.sigma**2)
-
+        return np.sum(np.abs(self.data - self.Phi.dir_op(x))**2.)/(2 * self.sigma**2)
