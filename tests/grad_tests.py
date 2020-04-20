@@ -4,6 +4,7 @@ import pytest
 from numpy import linalg as LA
 import numpy as np
 
+
 def test_l2_grad():
     y = np.ones(10)
     sigma = 1
@@ -12,4 +13,3 @@ def test_l2_grad():
     op = grad_operators.l2_norm(sigma, y, Phi)
     output = op.grad(0 * y)
     assert np.allclose(np.conj(A.T) @ (-y)/sigma**2, output, 1e-6)
-

@@ -1,13 +1,13 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import optimusprimal.primal_dual as primal_dual
+import optimusprimal.grad_operators as grad_operators
+import optimusprimal.linear_operators as linear_operators
+import optimusprimal.prox_operators as prox_operators
 import sys
 sys.path.insert(0, '..')
-import optimusprimal.prox_operators as prox_operators
-import optimusprimal.linear_operators as linear_operators
-import optimusprimal.grad_operators as grad_operators
-import optimusprimal.primal_dual as primal_dual
-import numpy as np
-import matplotlib.pyplot as plt
 
-output_dir = "output/"
+output_dir = 'output/'
 
 options = {'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False}
 ISNR = 20.
@@ -23,7 +23,7 @@ y = W * x + np.random.normal(0, sigma, size)
 g = grad_operators.l2_norm(sigma, y, linear_operators.diag_matrix_operator(W))
 g.beta = 1./sigma**2
 
-wav = ["db1", "db4"]
+wav = ['db1', 'db4']
 levels = 6
 shape = (size,)
 psi = linear_operators.dictionary(wav, levels, shape)
@@ -36,7 +36,8 @@ z, diag = primal_dual.FBPD(y, options, f, h, None, g)
 plt.plot(np.real(y))
 plt.plot(np.real(x))
 plt.plot(np.real(z))
-plt.legend(["data", "true", "fit"])
-SNR = np.log10(np.sqrt(np.sum(np.abs(x)**2))/np.sqrt(np.sum(np.abs(x - z)**2))) * 20.
-plt.title("SNR = " + str(SNR))
-plt.savefig(output_dir+"1d_unconstrained_example.png")
+plt.legend(['data', 'true', 'fit'])
+SNR = np.log10(np.sqrt(np.sum(np.abs(x)**2)) /
+               np.sqrt(np.sum(np.abs(x - z)**2))) * 20.
+plt.title('SNR = ' + str(SNR))
+plt.savefig(output_dir+'1d_unconstrained_example.png')

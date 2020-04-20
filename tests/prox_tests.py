@@ -24,14 +24,16 @@ def test_l2_ball_op():
 def test_l1_norm_op():
     gamma = 2
     inp = np.random.normal(0, 10., (10, 10))
-    out = np.maximum(0, np.abs(inp) - gamma) * np.exp(complex(0, 1) * np.angle(inp))
+    out = np.maximum(0, np.abs(inp) - gamma) * \
+        np.exp(complex(0, 1) * np.angle(inp))
     op = prox_operators.l1_norm(gamma)
     assert(op.fun(inp) >= 0)
     assert np.allclose(op.prox(inp, 1), out, 1e-6)
 
-    gamma = np.abs(np.random.normal(0, 3.,(10, 10)))
+    gamma = np.abs(np.random.normal(0, 3., (10, 10)))
     inp = np.random.normal(0, 10., (10, 10))
-    out = np.maximum(0, np.abs(inp) - gamma) * np.exp(complex(0, 1) * np.angle(inp))
+    out = np.maximum(0, np.abs(inp) - gamma) * \
+        np.exp(complex(0, 1) * np.angle(inp))
     op = prox_operators.l1_norm(gamma)
     assert(op.fun(inp) >= 0)
     assert np.allclose(op.prox(inp, 1), out, 1e-6)
