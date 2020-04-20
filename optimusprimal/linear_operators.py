@@ -113,7 +113,7 @@ class db_wavelets:
         if (len(self.shape) > 1):
             if (self.shape[1] % 2 == 1):
                 raise Exception("Signal shape should be even dimensions.")
-            
+
         coeffs = pywt.wavedecn(x, wavelet=self.wav,
                                level=self.levels, mode='periodic')
         arr, self.coeff_slices, self.coeff_shapes = pywt.ravel_coeffs(coeffs)

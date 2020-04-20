@@ -18,7 +18,7 @@ def bisection_method(
         obj1 = objective_function(eta1)
         eta3 = (eta2 + eta1) * 0.5
         obj3 = objective_function(eta3)
-        if(np.abs(eta1 - eta3)/np.abs(eta3) < tol):
+        if(np.abs(eta1 - eta3) / np.abs(eta3) < tol):
             if(np.abs(obj3) < tol):
                 return eta3
         if(np.sign(obj1) == np.sign(obj3)):
