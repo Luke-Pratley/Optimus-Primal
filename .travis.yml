@@ -34,3 +34,14 @@ jobs:
       after_success:
         - codecov
     
+    - name: lint-check
+      language: python
+      install:
+        - pip install pytest-cov codecov
+        - pip install pywavelets pytest 
+        - python setup.py build
+        - python setup.py install
+        - pip install --upgrade autopep8
+      script: 
+        - autopep8 --in-place --aggressive --aggressive optimusprimal/*.py
+        - git diff
