@@ -5,12 +5,12 @@ import numpy as np
 
 def test_bisection():
     def obj(x): return np.sum(x**2) - 9
-    val = map_uncertainty.bisection_method_credible_interval(
+    val = map_uncertainty.bisection_method(
         obj, [0, 10.], 1e3, 1e-3)
     assert np.allclose(val, 3., 1e-2)
 
     def obj(x): return np.sum(x**2) - 9
-    val = map_uncertainty.bisection_method_credible_interval(
+    val = map_uncertainty.bisection_method(
         obj, [-10., 0], 1e3, 1e-3)
     assert np.allclose(val, -3., 1e-2)
 
