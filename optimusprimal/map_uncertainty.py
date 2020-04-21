@@ -29,7 +29,7 @@ def bisection_method(
     return eta3
 
 
-def create_credible_region(
+def create_local_credible_interval(
         x_sol,
         region_size,
         objective_function,
