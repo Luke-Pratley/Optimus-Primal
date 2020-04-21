@@ -1,10 +1,9 @@
 import numpy as np
 import pywt
 
-def power_method(op, x_init, tol = 1e-3, iters = 1000):
-    """
-    Power method which returns the operator norm^2 and the eigen vector
-    """
+
+def power_method(op, x_init, tol=1e-3, iters=1000):
+    """Power method which returns the operator norm^2 and the eigen vector."""
     x_old = x_init
     val_old = 1
     for i in range(iters):
@@ -12,45 +11,45 @@ def power_method(op, x_init, tol = 1e-3, iters = 1000):
         val_new = np.linalg.norm(x_new)
         if np.abs(val_new - val_old) < tol * val_old:
             break
-        x_old = x_new / val_new 
+        x_old = x_new / val_new
         val_old = val_new
     return val_new, x_new
 
 
 class identity:
-    """
-    Identity operator
+    """Identity operator."""
 
-    """
-    
     def dir_op(self, x):
         return x
+
     def adj_op(self, x):
         return x
 
+
 class function_wrapper:
-    """
-    Given direct and adjoint functions return linear operator
+    """Given direct and adjoint functions return linear operator.
 
      INPUTS
     ========
-    dir_op  - forward operator 
+    dir_op  - forward operator
     adj_op  - adjoint operator
     """
     dir_op = None
     adj_op = None
+
     def __init__(self, dir_op, adj_op):
         self.dir_op = dir_op
         self.adj_op = adj_op
 
-class fft_operator:
-    """
-    Applies nd fft operator to nd signal
 
-    """
+class fft_operator:
+    """Applies nd fft operator to nd signal."""
+
     def __init__(self):
         self.dir_op = np.fft.fftn
         self.adj_op = np.fft.ifftn
+
+
 class diag_matrix_operator:
     """
     Applies diagonal matrix operator W * x
@@ -59,15 +58,16 @@ class diag_matrix_operator:
     ========
     W - array of weights
     """
-    
-    
+
     def __init__(self, W):
         self.W = W
-    
+
     def dir_op(self, x):
         return self.W * x
+
     def adj_op(self, x):
         return np.conj(self.W) * x
+
 
 class matrix_operator:
     """
@@ -77,23 +77,23 @@ class matrix_operator:
     ========
     A - numpy matrix
     """
-    
-    
+
     def __init__(self, A):
         self.A = A
         self.A_H = np.conj(A.T)
 
     def dir_op(self, x):
         return self.A @ x
+
     def adj_op(self, x):
         return self.A_H @ x
 
 
 class db_wavelets:
-    
+
     def __init__(self, wav, levels, shape):
 
-        if np.any( levels <= 0 ):
+        if np.any(levels <= 0):
             raise Exception("'levels' must be positive")
         self.wav = wav
         self.levels = levels
@@ -102,30 +102,43 @@ class db_wavelets:
         self.coeff_shapes = None
 
         self.adj_op(self.dir_op(np.ones(shape)))
-        
+
     def dir_op(self, x):
-        if (self.wav == "dirac"):
+        if (self.wav == 'dirac'):
             return np.ravel(x)
-        if (self.wav == "fourier"):
+        if (self.wav == 'fourier'):
             return np.ravel(np.fft.fftn(x))
-        coeffs = pywt.wavedecn(x, wavelet=self.wav, level=self.levels, mode ='periodic')
+        if (self.shape[0] % 2 == 1):
+            raise Exception("Signal shape should be even dimensions.")
+        if (len(self.shape) > 1):
+            if (self.shape[1] % 2 == 1):
+                raise Exception("Signal shape should be even dimensions.")
+
+        coeffs = pywt.wavedecn(x, wavelet=self.wav,
+                               level=self.levels, mode='periodic')
         arr, self.coeff_slices, self.coeff_shapes = pywt.ravel_coeffs(coeffs)
         return arr
+
     def adj_op(self, x):
-        if (self.wav == "dirac"):
-            return np.reshape(x,self.shape)
-        if (self.wav == "fourier"):
+        if (self.wav == 'dirac'):
+            return np.reshape(x, self.shape)
+        if (self.wav == 'fourier'):
             return np.fft.ifftn(np.reshape(x, self.shape))
-        coeffs_from_arr = pywt.unravel_coeffs(x, self.coeff_slices, self.coeff_shapes, output_format='wavedecn')
-        return pywt.waverecn(coeffs_from_arr, wavelet=self.wav, mode ='periodic')
+        coeffs_from_arr = pywt.unravel_coeffs(
+            x, self.coeff_slices, self.coeff_shapes, output_format='wavedecn')
+        return pywt.waverecn(
+            coeffs_from_arr,
+            wavelet=self.wav,
+            mode='periodic')
+
 
 class dictionary:
     sizes = []
     wavelet_list = []
-    
-    def __init__(self, wav, levels, shape = None):
 
-        if np.any( levels <= 0 ):
+    def __init__(self, wav, levels, shape=None):
+
+        if np.any(levels <= 0):
             raise Exception("'levels' must be positive")
         self.wavelet_list = []
         self.sizes = np.zeros(len(wav))
@@ -139,7 +152,8 @@ class dictionary:
             buff = self.wavelet_list[wav_i].dir_op(x)
             self.sizes[wav_i] = buff.shape[0]
             out = np.concatenate((out, buff), axis=0)
-        return out/ np.sqrt(len(self.wavelet_list))
+        return out / np.sqrt(len(self.wavelet_list))
+
     def adj_op(self, x):
         offset = 0
         out = 0

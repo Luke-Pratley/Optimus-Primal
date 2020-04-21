@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="optimiusprimal",
+    name="optimusprimal",
     version="0.0.1",
     author="Luke Pratley",
     author_email="luke.pratley@gmail.com",
