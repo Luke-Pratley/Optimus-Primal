@@ -1,7 +1,10 @@
 import optimusprimal.Empty as Empty
+import logging
 import numpy as np
 import time
+import sys
 
+logger = logging.getLogger('Optimus Primal')
 
 def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
     """Takes in an input signal with proximal operators and a gradient operator
@@ -42,8 +45,8 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
     x = x_init
     y = h.dir_op(x)
     z = p.dir_op(x)
-    print('Running Forward Backward Primal Dual')
 
+    logger.info('Running Forward Backward Primal Dual')
     timing = np.zeros(max_iter)
     criter = np.zeros(max_iter)
 
@@ -70,17 +73,12 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
 
         # stopping rule
         if np.linalg.norm(x - x_old) < tol * np.linalg.norm(x_old) and it > 10:
+            logger.info('[Primal Dual] converged in %d iterations', it)
             break
         if(update_iter >= 0):
             if(it % update_iter == 0):
-                print('[PD] ' +
-                      str(it) +
-                      ' out of ' +
-                      str(max_iter) +
-                      ' iterations; tol = ' +
-                      str(np.linalg.norm(x -
-                                         x_old) /
-                          np.linalg.norm(x_old)))
+                logger.info('[Primal Dual] %d out of %d iterations, tol = %f', it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
+        logger.debug('[Primal Dual] %d out of %d iterations, tol = %f', it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
 
     criter = criter[0:it + 1]
     timing = np.cumsum(timing[0:it + 1])

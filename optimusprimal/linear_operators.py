@@ -1,18 +1,24 @@
 import numpy as np
 import pywt
+import logging
 
+logger = logging.getLogger('Optimus Primal')
 
 def power_method(op, x_init, tol=1e-3, iters=1000):
     """Power method which returns the operator norm^2 and the eigen vector."""
     x_old = x_init
     val_old = 1
+    logger.info("Starting Power method")
     for i in range(iters):
         x_new = op.adj_op(op.dir_op(x_old))
         val_new = np.linalg.norm(x_new)
         if np.abs(val_new - val_old) < tol * val_old:
+            logger.info("[Power Method] Converged with iter = %s, tol = %s",i, np.abs(val_new - val_old)/np.abs(val_old))
             break
         x_old = x_new / val_new
         val_old = val_new
+        if(i % 10 == True):
+            logger.info("[Power Method] iter = %s, tol = %s",i, np.abs(val_new - val_old)/np.abs(val_old))
     return val_new, x_new
 
 
