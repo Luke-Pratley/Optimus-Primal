@@ -1,5 +1,8 @@
 import numpy as np
+import logging 
 
+
+logger = logging.getLogger('Optimus Primal')
 
 def bisection_method(
         objective_function, start_interval, iters, tol):
@@ -11,7 +14,7 @@ def bisection_method(
     if(np.allclose(eta1, eta2, 1e-12)):
         return eta1
     if(np.sign(objective_function(eta1)) == np.sign(objective_function(eta2))):
-        print('eta1 and eta2 have same sign.')
+        logger.info("[Bisection Method] There is no root in this range.")
         val = np.argmin(np.abs([eta1, eta2]))
         return [eta1, eta2][val]
     for i in range(int(iters)):
@@ -41,6 +44,7 @@ def create_local_credible_interval(
     """Bisection method for finding credible interval."""
 
     region = np.zeros(x_sol.shape)
+    logger.info("Calculating credible interval for %s superpxiels.", region.shape)
     if len(x_sol.shape) > 1:
         region[:region_size, :region_size] = 1.
         dsizey, dsizex = int(
@@ -64,7 +68,7 @@ def create_local_credible_interval(
                 error_m[i, j] = - \
                     bisection_method(
                         obj, [0, -bottom], iters, tol)
-                print(i, j, (error_p[i, j], error_m[i, j]), x_sum)
+                logger.info("[Credible Interval] (%s, %s) has interval (%s, %s) with sum %s", i, j,  error_m[i, j], error_p[i, j], x_sum)
     else:
         region[:region_size] = 1.
         dsizey = int(x_sol.shape[0] / region_size)
@@ -84,5 +88,5 @@ def create_local_credible_interval(
                 x_sol * (1. - mask) - eta * mask) - bound
             error_m[i] = - \
                 bisection_method(obj, [0, -bottom], iters, tol)
-            print(i, (error_p[i], error_m[i]), x_sum)
+            logger.info("[Credible Interval] %s has interval (%s, %s) with sum %s", i,  error_m[i], error_p[i], x_sum)
     return error_p, error_m, mean

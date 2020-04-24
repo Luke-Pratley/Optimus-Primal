@@ -73,12 +73,12 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
 
         # stopping rule
         if np.linalg.norm(x - x_old) < tol * np.linalg.norm(x_old) and it > 10:
-            logger.info('[PD] converged in %d iterations', it)
+            logger.info('[Primal Dual] converged in %d iterations', it)
             break
         if(update_iter >= 0):
             if(it % update_iter == 0):
-                logger.info('[PD] %d out of %d iterations, tol = %f', it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
-        logger.debug('[PD] %d out of %d iterations, tol = %f', it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
+                logger.info('[Primal Dual] %d out of %d iterations, tol = %f', it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
+        logger.debug('[Primal Dual] %d out of %d iterations, tol = %f', it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
 
     criter = criter[0:it + 1]
     timing = np.cumsum(timing[0:it + 1])
