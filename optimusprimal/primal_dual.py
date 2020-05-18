@@ -71,6 +71,10 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
             criter[it] = f.fun(x) + g.fun(x) + \
                 h.fun(h.dir_op(x)) + p.fun(p.dir_op(x))
 
+        if np.allclose(x, 0):
+            x = x_old
+            logger.info('[Primal Dual] converged to 0 in %d iterations', it)
+            break
         # stopping rule
         if np.linalg.norm(x - x_old) < tol * np.linalg.norm(x_old) and it > 10:
             logger.info('[Primal Dual] converged in %d iterations', it)
