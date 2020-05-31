@@ -42,7 +42,7 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
     sigmah = 1.
     sigmap = 1.
     # initialization
-    x = x_init
+    x = np.copy(x_init)
     y = h.dir_op(x)
     z = p.dir_op(x)
 
@@ -55,7 +55,7 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
 
         t = time.time()
         # primal forward-backward step
-        x_old = x
+        x_old = np.copy(x)
         x = x - tau * (g.grad(x) / g.beta / 2. + h.adj_op(y) /
                        h.beta + p.adj_op(z) / p.beta)
         x = f.prox(x, tau)

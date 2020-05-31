@@ -97,12 +97,15 @@ class matrix_operator:
 
 class db_wavelets:
 
-    def __init__(self, wav, levels, shape):
+    def __init__(self, wav, levels, shape, axes=None):
 
         if np.any(levels <= 0):
             raise Exception("'levels' must be positive")
+        if axes is None:
+            axes = range(len(shape))
+        self.axes = axes
         self.wav = wav
-        self.levels = levels
+        self.levels = np.array(levels, dtype=int)
         self.shape = shape
         self.coeff_slices = None
         self.coeff_shapes = None
@@ -121,8 +124,8 @@ class db_wavelets:
                 raise Exception("Signal shape should be even dimensions.")
 
         coeffs = pywt.wavedecn(x, wavelet=self.wav,
-                               level=self.levels, mode='periodic')
-        arr, self.coeff_slices, self.coeff_shapes = pywt.ravel_coeffs(coeffs)
+                               level=self.levels, mode='periodic', axes=self.axes)
+        arr, self.coeff_slices, self.coeff_shapes = pywt.ravel_coeffs(coeffs,axes=self.axes)
         return arr
 
     def adj_op(self, x):
@@ -135,21 +138,25 @@ class db_wavelets:
         return pywt.waverecn(
             coeffs_from_arr,
             wavelet=self.wav,
-            mode='periodic')
+            mode='periodic',axes=self.axes)
 
 
 class dictionary:
     sizes = []
     wavelet_list = []
 
-    def __init__(self, wav, levels, shape=None):
+    def __init__(self, wav, levels, shape, axes=None):
 
-        if np.any(levels <= 0):
-            raise Exception("'levels' must be positive")
         self.wavelet_list = []
         self.sizes = np.zeros(len(wav))
+        if(axes is None):
+            axes = []
+            for i in range(len(wav)):
+                axes.append(range(len(shape)))
+        if(np.isscalar(levels)):
+            levels = np.ones(len(wav)) * levels
         for i in range(len(wav)):
-            self.wavelet_list.append(db_wavelets(wav[i], levels, shape))
+            self.wavelet_list.append(db_wavelets(wav[i], levels[i], shape, axes[i]))
 
     def dir_op(self, x):
         out = self.wavelet_list[0].dir_op(x)
