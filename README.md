@@ -12,5 +12,6 @@ To learn more about proximal operators and algorithms, visit [proximity operator
 - Python >= 3.6
 - [PyWavelets](https://pywavelets.readthedocs.io/en/latest/)
 - Numpy
+- Scipy
 ### Optional
 - Matplotlib (only for examples)
