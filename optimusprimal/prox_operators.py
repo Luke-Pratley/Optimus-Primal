@@ -180,3 +180,107 @@ class real_prox:
 
     def adj_op(self, x):
         return x
+
+
+class poisson_loglike_ball:
+    """This class computes the proximity operator of the log of Poisson distribution
+
+                        f(x) = (1^t (x + b) - y^t log(x + b) < epsilon/2.) ? 0. : infty
+
+    When the input 'x' is an array. y is the data vector. Phi is the measurement operator.
+
+
+     INPUTS
+    ========
+     x         - ND array
+     background - background signal
+     epsilon   - radius of the ball
+     data      - data that that centres the ball
+     Phi       - Measurement/Weighting operator
+    """
+
+    def __init__(self, epsilon, data, background, iters=20, Phi=None):
+        if np.any(epsilon <= 0):
+            raise Exception("'epsilon' must be positive")
+        self.epsilon = epsilon
+        self.data = data
+        self.background = background
+        self.beta = 1.
+        if(Phi is None):
+            self.Phi = linear_operators.identity()
+        else:
+            self.Phi = Phi
+        self.loglike = lambda x, mask: np.sum(
+            x[mask] - self.data[mask] - self.data[mask] * np.log(x[mask]) + self.data[mask] * np.log(self.data[mask]))
+        # below are functions needed for newtons method to find the root for the prox
+        self.f = lambda x, delta, mask:  self.loglike(
+            np.abs(x - delta + np.sqrt((x - delta)**2 + 4 * delta * self.data))/2., mask) - epsilon/2.
+        self.df = lambda x, delta, mask: np.sum(((delta - x[mask] + 2 * self.data[mask])/np.sqrt((x[mask] - delta)**2 + 4 * delta * self.data[mask]) - 1)
+                                                * (1 - 2 * self.data[mask]/(x[mask] - delta + np.sqrt((x[mask] - delta)**2 + 4 * delta * self.data[mask]))))/2.
+        self.iters = iters
+
+    def prox(self, x, gamma):
+        x_buff = (x + self.background)
+        mask = np.logical_and(self.data > 0, x_buff > 0)
+        xx = self.loglike(x_buff, mask)
+        p = x_buff * 0
+        if (xx <= self.epsilon/2.):
+            p = x
+        else:
+            # below we use the prox for h(x + b) is prox_h(x + b) - b
+            delta = 0
+            for i in range(self.iters):
+                delta = delta - self.f(x_buff, delta, mask) / \
+                    self.df(x_buff, delta, mask)
+            p[mask] = (x_buff[mask] - delta + np.sqrt((x_buff[mask] -
+                                                       delta)**2 + 4 * delta * self.data[mask]))/2. - self.background[mask]
+        return p
+
+    def fun(self, x):
+        return 0
+
+    def dir_op(self, x):
+        return self.Phi.dir_op(x)
+
+    def adj_op(self, x):
+        return self.Phi.adj_op(x)
+
+
+class poisson_loglike:
+    """This class computes the proximity operator of the log of Poisson distribution
+
+                        f(x) = 1^t (x + b) - y^t log(x + b)
+
+    When the input 'x' is an array. y is the data vector. Phi is the measurement operator.
+
+
+     INPUTS
+    ========
+     x         - ND array
+     epsilon   - radius of the ball
+     data      - data that that centres the ball
+     Phi       - Measurement/Weighting operator
+    """
+
+    def __init__(self, data, background, Phi=None):
+
+        self.data = data
+        self.background = background
+        self.beta = 1.
+        if(Phi is None):
+            self.Phi = linear_operators.identity()
+        else:
+            self.Phi = Phi
+
+    def prox(self, x, gamma):
+        return (x + self.background - gamma +
+                np.sqrt((x + self.background - gamma)**2 + 4 * gamma * self.data))/2. - self.background
+
+    def fun(self, x):
+        return np.sum(x - self.data - self.data * np.log(x) + self.data * np.log(self.data))
+
+    def dir_op(self, x):
+        return self.Phi.dir_op(x)
+
+    def adj_op(self, x):
+        return self.Phi.adj_op(x)
