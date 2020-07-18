@@ -31,7 +31,7 @@ def test_l1_constrained():
     h = prox_operators.l1_norm(np.max(np.abs(psi.dir_op(y))) * 1e-3, psi)
     h.beta = 1.
     f = prox_operators.real_prox()
-    z, diag = primal_dual.FBPD(y, options, f, h, p, None)
+    z, diag = primal_dual.FBPD(y, options, None, f, h, p)
     assert(np.linalg.norm(z - W * y) < epsilon * 1.05)
     assert(diag['max_iter'] < 500)
 
@@ -60,5 +60,5 @@ def test_l1_unconstrained():
     h = prox_operators.l1_norm(np.max(np.abs(psi.dir_op(y))) * 5e-3, psi)
     h.beta = 1.
     f = prox_operators.real_prox()
-    z, diag = primal_dual.FBPD(y, options, f, h, None, g)
+    z, diag = primal_dual.FBPD(y, options, g, f, h)
     assert(diag['max_iter'] < 500)

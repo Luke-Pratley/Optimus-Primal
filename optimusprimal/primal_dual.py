@@ -6,7 +6,8 @@ import sys
 
 logger = logging.getLogger('Optimus Primal')
 
-def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
+
+def FBPD(x_init, options=None, g=None, f=None, h=None, p=None, r=None):
     """Takes in an input signal with proximal operators and a gradient operator
     and returns a solution with diagnostics."""
     # default inputs
@@ -18,6 +19,8 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
         h = Empty.EmptyProx()
     if p is None:
         p = Empty.EmptyProx()
+    if r is None:
+        r = Empty.EmptyProx()
     if options is None:
         options = {'tol': 1e-4, 'iter': 500,
                    'update_iter': 100, 'record_iters': False}
@@ -41,10 +44,12 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
     tau = 0.5 / 3.
     sigmah = 1.
     sigmap = 1.
+    sigmar = 1.
     # initialization
     x = np.copy(x_init)
     y = h.dir_op(x)
     z = p.dir_op(x)
+    w = r.dir_op(x)
 
     logger.info('Running Forward Backward Primal Dual')
     timing = np.zeros(max_iter)
@@ -57,7 +62,7 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
         # primal forward-backward step
         x_old = np.copy(x)
         x = x - tau * (g.grad(x) / g.beta / 2. + h.adj_op(y) /
-                       h.beta + p.adj_op(z) / p.beta)
+                       h.beta + p.adj_op(z) / p.beta + r.adj_op(w)/r.beta)
         x = f.prox(x, tau)
         # dual forward-backward step
         y = y + sigmah * h.dir_op(2 * x - x_old)
@@ -65,11 +70,14 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
 
         z = z + sigmap * p.dir_op(2 * x - x_old)
         z = z - sigmap * p.prox(z / sigmap, 1. / sigmap)
+
+        w = w + sigmap * r.dir_op(2 * x - x_old)
+        w = w - sigmap * r.prox(w / sigmar, 1. / sigmap)
         # time and criterion
         if(record_iters):
             timing[it] = time.time() - t
             criter[it] = f.fun(x) + g.fun(x) + \
-                h.fun(h.dir_op(x)) + p.fun(p.dir_op(x))
+                h.fun(h.dir_op(x)) + p.fun(p.dir_op(x)) + r.fun(r.dir_op(x))
 
         if np.allclose(x, 0):
             x = x_old
@@ -81,8 +89,10 @@ def FBPD(x_init, options=None, f=None, h=None, p=None, g=None):
             break
         if(update_iter >= 0):
             if(it % update_iter == 0):
-                logger.info('[Primal Dual] %d out of %d iterations, tol = %f', it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
-        logger.debug('[Primal Dual] %d out of %d iterations, tol = %f', it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
+                logger.info('[Primal Dual] %d out of %d iterations, tol = %f',
+                            it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
+        logger.debug('[Primal Dual] %d out of %d iterations, tol = %f',
+                     it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
 
     criter = criter[0:it + 1]
     timing = np.cumsum(timing[0:it + 1])
