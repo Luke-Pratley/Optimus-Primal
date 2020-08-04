@@ -181,6 +181,31 @@ class real_prox:
     def adj_op(self, x):
         return x
 
+class zero_prox:
+    """This class computes the proximity operator of the indicator function for zero.
+
+                        f(x) = (0 == x) ? 0. : infty
+    it returns the projection.
+    """
+
+    def __init__(self, indices, op):
+        self.beta = 1.
+        self.indices = indices
+        self.op = op
+    def prox(self, x, tau):
+        buff = np.copy(x)
+        buff[self.indices] = 0
+        return buff
+
+    def fun(self, x):
+        return 0.
+
+    def dir_op(self, x):
+        return self.op.dir_op(x)
+
+    def adj_op(self, x):
+        return self.op.adj_op(x)
+
 
 class poisson_loglike_ball:
     """This class computes the proximity operator of the log of Poisson distribution
