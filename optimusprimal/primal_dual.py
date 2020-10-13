@@ -7,7 +7,7 @@ import sys
 logger = logging.getLogger('Optimus Primal')
 
 
-def FBPD(x_init, options=None, g=None, f=None, h=None, p=None, r=None):
+def FBPD(x_init, options=None, g=None, f=None, h=None, p=None, r=None, viewer = lambda x, res: True):
     """Takes in an input signal with proximal operators and a gradient operator
     and returns a solution with diagnostics."""
     # default inputs
@@ -91,6 +91,7 @@ def FBPD(x_init, options=None, g=None, f=None, h=None, p=None, r=None):
             if(it % update_iter == 0):
                 logger.info('[Primal Dual] %d out of %d iterations, tol = %f',
                             it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
+                viewer(x, x_init)
         logger.debug('[Primal Dual] %d out of %d iterations, tol = %f',
                      it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
 
