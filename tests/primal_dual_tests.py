@@ -10,7 +10,7 @@ sys.path.insert(0, '..')
 def test_l1_constrained():
     options = {'tol': 1e-5, 'iter': 5000,
                'update_iter': 50, 'record_iters': False}
-    ISNR = 20.
+    ISNR = 40.
     sigma = 10**(-ISNR / 20.)
     size = 1024
     epsilon = np.sqrt(size + 2. * np.sqrt(size)) * sigma
@@ -35,7 +35,7 @@ def test_l1_constrained():
     assert(np.linalg.norm(z - W * y) < epsilon * 1.05)
     assert(diag['max_iter'] < 500)
     #testing warm start
-    z1, diag1 = primal_dual.FBPD(z, options, None, f, h, p)
+    z1, diag1 = primal_dual.FBPD_warm_start(z, diag['y'], diag['z'], diag['w'], options, None, f, h, p)
     assert(diag1['max_iter'] < diag['max_iter'])
     
 

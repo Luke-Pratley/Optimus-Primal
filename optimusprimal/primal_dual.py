@@ -7,6 +7,23 @@ logger = logging.getLogger('Optimus Primal')
 
 
 def FBPD(x_init, options=None, g=None, f=None, h=None, p=None, r=None, viewer = None):
+    if f is None:
+        f = Empty.EmptyProx()
+    if g is None:
+        g = Empty.EmptyGrad()
+    if h is None:
+        h = Empty.EmptyProx()
+    if p is None:
+        p = Empty.EmptyProx()
+    if r is None:
+        r = Empty.EmptyProx()
+    x = x_init
+    y = h.dir_op(x) * 0.
+    z = p.dir_op(x) * 0
+    w = r.dir_op(x) * 0
+    return FBPD_warm_start(x_init, y, z, w, options, g, f, h, p, r, viewer)
+
+def FBPD_warm_start(x_init, y, z, w, options=None, g=None, f=None, h=None, p=None, r=None, viewer = None):
     """Takes in an input signal with proximal operators and a gradient operator
     and returns a solution with diagnostics."""
     # default inputs
@@ -46,9 +63,6 @@ def FBPD(x_init, options=None, g=None, f=None, h=None, p=None, r=None, viewer = 
     sigmar = 1.
     # initialization
     x = np.copy(x_init)
-    y = h.dir_op(x) * 0.
-    z = p.dir_op(x) * 0.
-    w = r.dir_op(x) * 0.
 
     logger.info('Running Forward Backward Primal Dual')
     timing = np.zeros(max_iter)
@@ -98,5 +112,5 @@ def FBPD(x_init, options=None, g=None, f=None, h=None, p=None, r=None, viewer = 
     criter = criter[0:it + 1]
     timing = np.cumsum(timing[0:it + 1])
     solution = x
-    diagnostics = {'max_iter': it, 'times': timing, 'Obj_vals': criter}
+    diagnostics = {'max_iter': it, 'times': timing, 'Obj_vals': criter, 'z': z, 'y': y, 'w': w}
     return solution, diagnostics
