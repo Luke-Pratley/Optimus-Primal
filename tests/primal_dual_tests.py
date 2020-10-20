@@ -34,6 +34,10 @@ def test_l1_constrained():
     z, diag = primal_dual.FBPD(y, options, None, f, h, p)
     assert(np.linalg.norm(z - W * y) < epsilon * 1.05)
     assert(diag['max_iter'] < 500)
+    #testing warm start
+    z1, diag1 = primal_dual.FBPD(z, options, None, f, h, p)
+    assert(diag1['max_iter'] < diag['max_iter'])
+    
 
 
 def test_l1_unconstrained():
