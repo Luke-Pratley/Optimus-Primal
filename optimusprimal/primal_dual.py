@@ -57,10 +57,10 @@ def FBPD_warm_start(x_init, y, z, w, options=None, g=None, f=None, h=None, p=Non
     update_iter = options['update_iter']
     record_iters = options['record_iters']
     # step-sizes
-    tau = 0.5 / 3.
-    sigmah = 1.
-    sigmap = 1.
-    sigmar = 1.
+    tau = 0.5 / g.beta
+    sigmah = 1 * g.beta
+    sigmap = 1 * g.beta
+    sigmar = 1 * g.beta
     # initialization
     x = np.copy(x_init)
 
@@ -74,7 +74,7 @@ def FBPD_warm_start(x_init, y, z, w, options=None, g=None, f=None, h=None, p=Non
         t = time.time()
         # primal forward-backward step
         x_old = np.copy(x)
-        x = x - tau * (g.grad(x) / g.beta / 2. + h.adj_op(y) /
+        x = x - tau * (g.grad(x) + h.adj_op(y) /
                        h.beta + p.adj_op(z) / p.beta + r.adj_op(w)/r.beta)
         x = f.prox(x, tau)
         # dual forward-backward step
@@ -84,8 +84,8 @@ def FBPD_warm_start(x_init, y, z, w, options=None, g=None, f=None, h=None, p=Non
         z = z + sigmap * p.dir_op(2 * x - x_old)
         z = z - sigmap * p.prox(z / sigmap, 1. / sigmap)
 
-        w = w + sigmap * r.dir_op(2 * x - x_old)
-        w = w - sigmap * r.prox(w / sigmar, 1. / sigmap)
+        w = w + sigmar * r.dir_op(2 * x - x_old)
+        w = w - sigmar * r.prox(w / sigmar, 1. / sigmar)
         # time and criterion
         if(record_iters):
             timing[it] = time.time() - t

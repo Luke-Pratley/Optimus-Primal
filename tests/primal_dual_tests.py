@@ -1,10 +1,10 @@
 import numpy as np
+import sys
+sys.path.insert(0, '..')
 import optimusprimal.primal_dual as primal_dual
 import optimusprimal.grad_operators as grad_operators
 import optimusprimal.linear_operators as linear_operators
 import optimusprimal.prox_operators as prox_operators
-import sys
-sys.path.insert(0, '..')
 
 
 def test_l1_constrained():
@@ -41,7 +41,7 @@ def test_l1_constrained():
 
 
 def test_l1_unconstrained():
-    options = {'tol': 1e-5, 'iter': 5000,
+    options = {'tol': 1e-5, 'iter': 500,
                'update_iter': 50, 'record_iters': False}
     ISNR = 20.
     sigma = 10**(-ISNR / 20.)
@@ -65,4 +65,35 @@ def test_l1_unconstrained():
     h.beta = 1.
     f = prox_operators.real_prox()
     z, diag = primal_dual.FBPD(y, options, g, f, h)
+    #assert(diag['max_iter'] < 500)
+
+def test_l1_unconstrained_fb():
+    options = {'tol': 1e-10, 'iter': 5000,
+               'update_iter': 50, 'record_iters': False}
+    ISNR = 20.
+    sigma = 10**(-ISNR / 20.)
+    size = 32
+    epsilon = np.sqrt(size + 2. * np.sqrt(size)) * sigma
+    x = np.linspace(0, 30, size)
+
+    W = np.ones((size,))
+
+    y = W * x + np.random.normal(0, sigma, size)
+    g = grad_operators.l2_norm(
+        sigma, y, linear_operators.diag_matrix_operator(W))
+    g.beta = 1/sigma**2
+    psi = linear_operators.diag_matrix_operator(W)
+    gamma = 50
+    h = prox_operators.l1_norm(gamma, psi)
+    h.beta = 1.
+    f = prox_operators.real_prox()
+    z, diag = primal_dual.FBPD(x, options, g, f, h)
+    z_fb = x
+    mu = 0.5 * sigma**2
+    for it in range(5000):
+        z_fb = h.prox(z_fb - mu * g.grad(z_fb) , mu)
+    solution = h.prox(y/sigma**2, 1) * sigma**2
+
     assert(diag['max_iter'] < 500)
+    assert(np.isclose(z,z_fb, 1e-4).all())
+    assert(np.isclose(z,solution, 1e-4).all())

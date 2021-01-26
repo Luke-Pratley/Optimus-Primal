@@ -31,7 +31,7 @@ psi = linear_operators.dictionary(wav, levels, shape)
 h = prox_operators.l1_norm(np.max(np.abs(psi.dir_op(y))) * 5e-3, psi)
 h.beta = 1.
 f = prox_operators.real_prox()
-z, diag = primal_dual.FBPD(y, options, f, h, None, g)
+z, diag = primal_dual.FBPD(y, options, g, f, h)
 
 plt.plot(np.real(y))
 plt.plot(np.real(x))

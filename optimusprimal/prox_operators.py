@@ -48,6 +48,47 @@ class l2_ball:
     def adj_op(self, x):
         return self.Phi.adj_op(x)
 
+class l_inf_ball:
+    """This class computes the proximity operator of the l_inf ball.
+
+                        f(x) = (||Phi x - y||_inf < epsilon) ? 0. : infty
+
+    When the input 'x' is an array. y is the data vector. Phi is the measurement operator.
+
+
+     INPUTS
+    ========
+     x         - ND array
+     epsilon   - radius of l2-ball
+     data      - data that that centres the l2-ball
+     Phi       - Measurement/Weighting operator
+    """
+
+    def __init__(self, epsilon, data, Phi=None):
+
+        if np.any(epsilon <= 0):
+            raise Exception("'epsilon' must be positive")
+        self.epsilon = epsilon
+        self.data = data
+        self.beta = 1.
+        if(Phi is None):
+            self.Phi = linear_operators.identity()
+        else:
+            self.Phi = Phi
+
+    def prox(self, x, gamma):
+        z = x - self.data
+        return np.minimum(self.epsilon, np.abs(z)) * np.exp(complex(0, 1) * np.angle(z)) + self.data
+
+    def fun(self, x):
+        return 0
+
+    def dir_op(self, x):
+        return self.Phi.dir_op(x)
+
+    def adj_op(self, x):
+        return self.Phi.adj_op(x)
+
 
 class l1_norm:
 
@@ -303,6 +344,47 @@ class poisson_loglike:
 
     def fun(self, x):
         return np.sum(x - self.data - self.data * np.log(x) + self.data * np.log(self.data))
+
+    def dir_op(self, x):
+        return self.Phi.dir_op(x)
+
+    def adj_op(self, x):
+        return self.Phi.adj_op(x)
+
+class l21_norm:
+    """This class computes the proximity operator of the l2 ball.
+
+                        f(x) = (||Phi x - y|| < epsilon) ? 0. : infty
+
+    When the input 'x' is an array. y is the data vector. Phi is the measurement operator.
+
+
+     INPUTS
+    ========
+     x         - ND array
+     epsilon   - radius of l2-ball
+     data      - data that that centres the l2-ball
+     Phi       - Measurement/Weighting operator
+    """
+
+    def __init__(self, tau, l2axis=0, Phi=None):
+
+        if np.any(tau <= 0):
+            raise Exception("'tau' must be positive")
+        self.tau = tau
+        self.l2axis=l2axis
+        self.beta = 1.
+        if(Phi is None):
+            self.Phi = linear_operators.identity()
+        else:
+            self.Phi = Phi
+
+    def prox(self, x, gamma):
+        xx = np.expand_dims(np.sqrt(np.sum(np.square(np.abs(x)), axis=self.l2axis)), self.l2axis)
+        return x * ( 1  -  self.tau * gamma / np.maximum(xx, self.tau * gamma)) 
+
+    def fun(self, x):
+        return 0
 
     def dir_op(self, x):
         return self.Phi.dir_op(x)
