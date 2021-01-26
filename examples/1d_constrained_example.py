@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
+sys.path.insert(0, '..')
 import optimusprimal.primal_dual as primal_dual
 import optimusprimal.linear_operators as linear_operators
 import optimusprimal.prox_operators as prox_operators
-import sys
-sys.path.insert(0, '..')
 
 output_dir = 'output/'
 
@@ -31,7 +31,7 @@ psi = linear_operators.dictionary(wav, levels, shape)
 h = prox_operators.l1_norm(np.max(np.abs(psi.dir_op(y))) * 1e-3, psi)
 h.beta = 1.
 f = prox_operators.real_prox()
-z, diag = primal_dual.FBPD(y, options, f, h, p, None)
+z, diag = primal_dual.FBPD(y, options, None, f, h, p, None)
 
 plt.plot(np.real(y))
 plt.plot(np.real(x))
