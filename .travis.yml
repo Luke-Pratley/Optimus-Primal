@@ -12,6 +12,8 @@ jobs:
 
     - name: codecov
       language: python
+      python:
+        - "3.8"
       install:
         - pip install pytest-cov codecov
         - pip install pywavelets pytest 
@@ -25,6 +27,8 @@ jobs:
     
     - name: lint-check
       language: python
+      python:
+        - "3.8"
       install:
         - pip install --upgrade autopep8
       script: 
