@@ -57,10 +57,10 @@ def FBPD_warm_start(x_init, y, z, w, options=None, g=None, f=None, h=None, p=Non
     update_iter = options['update_iter']
     record_iters = options['record_iters']
     # step-sizes
-    tau = 0.5 / g.beta
-    sigmah = 1 * g.beta
-    sigmap = 1 * g.beta
-    sigmar = 1 * g.beta
+    tau = 1 / (g.beta + 2)
+    sigmah = (1/tau - g.beta/2)/(h.beta + p.beta + r.beta)
+    sigmap = (1/tau - g.beta/2)/(h.beta + p.beta + r.beta)
+    sigmar = (1/tau - g.beta/2)/(h.beta + p.beta + r.beta)
     # initialization
     x = np.copy(x_init)
 
@@ -74,8 +74,7 @@ def FBPD_warm_start(x_init, y, z, w, options=None, g=None, f=None, h=None, p=Non
         t = time.time()
         # primal forward-backward step
         x_old = np.copy(x)
-        x = x - tau * (g.grad(x) + h.adj_op(y) /
-                       h.beta + p.adj_op(z) / p.beta + r.adj_op(w)/r.beta)
+        x = x - tau * (g.grad(x) + h.adj_op(y) + p.adj_op(z) + r.adj_op(w))
         x = f.prox(x, tau)
         # dual forward-backward step
         y = y + sigmah * h.dir_op(2 * x - x_old)
