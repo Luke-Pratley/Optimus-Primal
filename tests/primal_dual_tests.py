@@ -68,9 +68,9 @@ def test_l1_unconstrained():
     #assert(diag['max_iter'] < 500)
 
 def test_l1_unconstrained_fb():
-    options = {'tol': 1e-10, 'iter': 5000,
+    options = {'tol': 1e-6, 'iter': 5000,
                'update_iter': 50, 'record_iters': False}
-    ISNR = 20.
+    ISNR = 50.
     sigma = 10**(-ISNR / 20.)
     size = 32
     epsilon = np.sqrt(size + 2. * np.sqrt(size)) * sigma
@@ -92,8 +92,9 @@ def test_l1_unconstrained_fb():
     mu = 0.5 * sigma**2
     for it in range(5000):
         z_fb = h.prox(z_fb - mu * g.grad(z_fb) , mu)
-    solution = h.prox(y/sigma**2, 1) * sigma**2
-
+    h = prox_operators.l1_norm(gamma * sigma**2, psi)
+    solution = h.prox(y, 1)
     assert(diag['max_iter'] < 500)
-    assert(np.isclose(z,z_fb, 1e-4).all())
-    assert(np.isclose(z,solution, 1e-4).all())
+    assert(np.isclose(z,z_fb, 1e-3).all())
+    assert(np.isclose(z,solution, 1e-3).all())
+
