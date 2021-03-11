@@ -91,6 +91,70 @@ def create_local_credible_interval(
             logger.info("[Credible Interval] %s has interval (%s, %s) with sum %s", i,  error_m[i], error_p[i], x_sum)
     return error_p, error_m, mean
 
+def create_local_credible_interval_fast(
+        x_sol,
+        phi,
+        psi,
+        region_size,
+        function,
+        bound,
+        iters,
+        tol,
+        bottom,
+        top):
+    """Bisection method for finding credible interval."""
+
+    region = np.zeros(x_sol.shape)
+    logger.info("Calculating credible interval for %s superpxiels.", region.shape)
+    if len(x_sol.shape) > 1:
+        dsizey, dsizex = int(
+            x_sol.shape[0] / region_size), int(x_sol.shape[1] / region_size)
+        error_p = np.zeros((dsizey, dsizex))
+        error_m = np.zeros((dsizey, dsizex))
+        mean = np.zeros((dsizey, dsizex))
+        mask = np.zeros(x_sol.shape)
+        for i in range(dsizey):
+            for j in range(dsizex):
+                mask = mask * 0
+                mask[(i * region_size):((i + 1) * region_size),(j * region_size):((j + 1) * region_size)] = 1                 
+                x_sum = np.mean(x_sol[mask > 0])
+                mean[i, j] = x_sum
+                buff = x_sol * (1. - mask) + mask * x_sum
+                wav_sol = psi.dir_op(buff)
+                data_sol = phi.dir_op(buff)
+                wav_mask = psi.dir_op(mask)
+                data_mask = phi.dir_op(mask)
+                def obj(eta): 
+                    return function(data_sol, eta * data_mask, wav_sol, wav_mask * eta) - bound
+                error_p[i, j] = bisection_method(
+                    obj, [0, top], iters, tol)
+                def obj(eta): return function(data_sol, -eta * data_mask, wav_sol, wav_mask * -eta) - bound
+                error_m[i, j] = - \
+                    bisection_method(
+                        obj, [0, -bottom], iters, tol)
+                logger.info("[Credible Interval] (%s, %s) has interval (%s, %s) with sum %s", i, j,  error_m[i, j], error_p[i, j], x_sum)
+    else:
+        region[:region_size] = 1.
+        dsizey = int(x_sol.shape[0] / region_size)
+        error_p = np.zeros((dsizey))
+        error_m = np.zeros((dsizey))
+        mean = np.zeros((dsizey))
+        for i in range(dsizey):
+            mask = np.roll(region, shift=i * region_size, axis=0)
+            x_sum = np.sum(np.ravel(x_sol[(mask.astype(bool))]))
+            mean[i] = x_sum
+            def obj(eta): return function(
+                x_sol * (1. - mask) + eta * mask) - bound
+            error_p[i] = bisection_method(
+                obj, [0, top], iters, tol)
+
+            def obj(eta): return function(
+                x_sol * (1. - mask) - eta * mask) - bound
+            error_m[i] = - \
+                bisection_method(obj, [0, -bottom], iters, tol)
+            logger.info("[Credible Interval] %s has interval (%s, %s) with sum %s", i,  error_m[i], error_p[i], x_sum)
+    return error_p, error_m, mean
+
 def create_superpixel_map(
         x_sol,
         region_size):
