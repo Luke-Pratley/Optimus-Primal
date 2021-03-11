@@ -15,7 +15,7 @@ def power_method(op, x_init, tol=1e-3, iters=1000):
         x_new = op.adj_op(op.dir_op(x_old))
         val_new = np.linalg.norm(x_new)
         if np.abs(val_new - val_old) < tol * val_old:
-            logger.info("[Power Method] Converged with iter = %s, tol = %s", i, np.abs(
+            logger.info("[Power Method] Converged with norm= %s, iter = %s, tol = %s", val_new, i, np.abs(
                 val_new - val_old)/np.abs(val_old))
             break
         x_old = x_new / val_new
