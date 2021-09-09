@@ -17,7 +17,6 @@ class l2_ball:
      data      - data that that centres the l2-ball
      Phi       - Measurement/Weighting operator
     """
-
     def __init__(self, epsilon, data, Phi=None):
 
         if np.any(epsilon <= 0):
@@ -25,7 +24,7 @@ class l2_ball:
         self.epsilon = epsilon
         self.data = data
         self.beta = 1.
-        if(Phi is None):
+        if (Phi is None):
             self.Phi = linear_operators.identity()
         else:
             self.Phi = Phi
@@ -48,6 +47,7 @@ class l2_ball:
     def adj_op(self, x):
         return self.Phi.adj_op(x)
 
+
 class l_inf_ball:
     """This class computes the proximity operator of the l_inf ball.
 
@@ -63,7 +63,6 @@ class l_inf_ball:
      data      - data that that centres the l2-ball
      Phi       - Measurement/Weighting operator
     """
-
     def __init__(self, epsilon, data, Phi=None):
 
         if np.any(epsilon <= 0):
@@ -71,14 +70,15 @@ class l_inf_ball:
         self.epsilon = epsilon
         self.data = data
         self.beta = 1.
-        if(Phi is None):
+        if (Phi is None):
             self.Phi = linear_operators.identity()
         else:
             self.Phi = Phi
 
     def prox(self, x, gamma):
         z = x - self.data
-        return np.minimum(self.epsilon, np.abs(z)) * np.exp(complex(0, 1) * np.angle(z)) + self.data
+        return np.minimum(self.epsilon, np.abs(z)) * np.exp(
+            complex(0, 1) * np.angle(z)) + self.data
 
     def fun(self, x):
         return 0
@@ -91,7 +91,6 @@ class l_inf_ball:
 
 
 class l1_norm:
-
     """This class computes the proximity operator of the l2 ball.
 
                         f(x) = ||Psi x||_1 * gamma
@@ -105,7 +104,6 @@ class l1_norm:
      gamma     - regularization parameter
      Phi       - Measurement/Weighting operator
     """
-
     def __init__(self, gamma, Psi=None):
 
         if np.any(gamma <= 0):
@@ -114,7 +112,7 @@ class l1_norm:
         self.gamma = gamma
         self.beta = 1.
 
-        if(Psi is None):
+        if (Psi is None):
             self.Psi = linear_operators.identity()
         else:
             self.Psi = Psi
@@ -134,7 +132,6 @@ class l1_norm:
 
 
 class l2_square_norm:
-
     """This class computes the proximity operator of the l2 squared.
 
                         f(x) = 0.5/sigma^2 * ||Psi x||_2^2
@@ -148,7 +145,6 @@ class l2_square_norm:
      sigma     - regularization parameter
      Phi       - Measurement/Weighting operator
     """
-
     def __init__(self, sigma, Psi=None):
 
         if np.any(sigma <= 0):
@@ -157,7 +153,7 @@ class l2_square_norm:
         self.sigma = sigma
         self.beta = 1.
 
-        if(Psi is None):
+        if (Psi is None):
             self.Psi = linear_operators.identity()
         else:
             self.Psi = Psi
@@ -182,7 +178,6 @@ class positive_prox:
                         f(x) = (Re{x} >= 0) ? 0. : infty
     it returns the projection.
     """
-
     def __init__(self):
         self.beta = 1.
 
@@ -206,7 +201,6 @@ class real_prox:
                         f(x) = (Re{x} == x) ? 0. : infty
     it returns the projection.
     """
-
     def __init__(self):
         self.beta = 1.
 
@@ -222,18 +216,19 @@ class real_prox:
     def adj_op(self, x):
         return x
 
+
 class zero_prox:
     """This class computes the proximity operator of the indicator function for zero.
 
                         f(x) = (0 == x) ? 0. : infty
     it returns the projection.
     """
-
-    def __init__(self, indices, op, offset = 0):
+    def __init__(self, indices, op, offset=0):
         self.beta = 1.
         self.indices = indices
         self.op = op
         self.offset = offset
+
     def prox(self, x, tau):
         buff = np.copy(x)
         buff[self.indices] = self.offset
@@ -265,7 +260,6 @@ class poisson_loglike_ball:
      data      - data that that centres the ball
      Phi       - Measurement/Weighting operator
     """
-
     def __init__(self, epsilon, data, background, iters=20, Phi=None):
         if np.any(epsilon <= 0):
             raise Exception("'epsilon' must be positive")
@@ -273,17 +267,22 @@ class poisson_loglike_ball:
         self.data = data
         self.background = background
         self.beta = 1.
-        if(Phi is None):
+        if (Phi is None):
             self.Phi = linear_operators.identity()
         else:
             self.Phi = Phi
-        self.loglike = lambda x, mask: np.sum(
-            x[mask] - self.data[mask] - self.data[mask] * np.log(x[mask]) + self.data[mask] * np.log(self.data[mask]))
+        self.loglike = lambda x, mask: np.sum(x[mask] - self.data[
+            mask] - self.data[mask] * np.log(x[mask]) + self.data[mask] * np.
+                                              log(self.data[mask]))
         # below are functions needed for newtons method to find the root for the prox
-        self.f = lambda x, delta, mask:  self.loglike(
-            np.abs(x - delta + np.sqrt((x - delta)**2 + 4 * delta * self.data))/2., mask) - epsilon/2.
-        self.df = lambda x, delta, mask: np.sum(((delta - x[mask] + 2 * self.data[mask])/np.sqrt((x[mask] - delta)**2 + 4 * delta * self.data[mask]) - 1)
-                                                * (1 - 2 * self.data[mask]/(x[mask] - delta + np.sqrt((x[mask] - delta)**2 + 4 * delta * self.data[mask]))))/2.
+        self.f = lambda x, delta, mask: self.loglike(
+            np.abs(x - delta + np.sqrt((x - delta)**2 + 4 * delta * self.data))
+            / 2., mask) - epsilon / 2.
+        self.df = lambda x, delta, mask: np.sum(
+            ((delta - x[mask] + 2 * self.data[mask]) / np.sqrt(
+                (x[mask] - delta)**2 + 4 * delta * self.data[mask]) - 1) *
+            (1 - 2 * self.data[mask] / (x[mask] - delta + np.sqrt(
+                (x[mask] - delta)**2 + 4 * delta * self.data[mask])))) / 2.
         self.iters = iters
 
     def prox(self, x, gamma):
@@ -291,7 +290,7 @@ class poisson_loglike_ball:
         mask = np.logical_and(self.data > 0, x_buff > 0)
         xx = self.loglike(x_buff, mask)
         p = x_buff * 0
-        if (xx <= self.epsilon/2.):
+        if (xx <= self.epsilon / 2.):
             p = x
         else:
             # below we use the prox for h(x + b) is prox_h(x + b) - b
@@ -299,8 +298,9 @@ class poisson_loglike_ball:
             for i in range(self.iters):
                 delta = delta - self.f(x_buff, delta, mask) / \
                     self.df(x_buff, delta, mask)
-            p[mask] = (x_buff[mask] - delta + np.sqrt((x_buff[mask] -
-                                                       delta)**2 + 4 * delta * self.data[mask]))/2. - self.background[mask]
+            p[mask] = (x_buff[mask] - delta + np.sqrt(
+                (x_buff[mask] - delta)**2 +
+                4 * delta * self.data[mask])) / 2. - self.background[mask]
         return p
 
     def fun(self, x):
@@ -328,29 +328,31 @@ class poisson_loglike:
      data      - data that that centres the ball
      Phi       - Measurement/Weighting operator
     """
-
     def __init__(self, data, background, Phi=None):
 
         self.data = data
         self.background = background
         self.beta = 1.
-        if(Phi is None):
+        if (Phi is None):
             self.Phi = linear_operators.identity()
         else:
             self.Phi = Phi
 
     def prox(self, x, gamma):
-        return (x + self.background - gamma +
-                np.sqrt((x + self.background - gamma)**2 + 4 * gamma * self.data))/2. - self.background
+        return (x + self.background - gamma + np.sqrt(
+            (x + self.background - gamma)**2 +
+            4 * gamma * self.data)) / 2. - self.background
 
     def fun(self, x):
-        return np.sum(x - self.data - self.data * np.log(x) + self.data * np.log(self.data))
+        return np.sum(x - self.data - self.data * np.log(x) +
+                      self.data * np.log(self.data))
 
     def dir_op(self, x):
         return self.Phi.dir_op(x)
 
     def adj_op(self, x):
         return self.Phi.adj_op(x)
+
 
 class l21_norm:
     """This class computes the proximity operator of the l2 ball.
@@ -367,22 +369,23 @@ class l21_norm:
      data      - data that that centres the l2-ball
      Phi       - Measurement/Weighting operator
     """
-
     def __init__(self, tau, l2axis=0, Phi=None):
 
         if np.any(tau <= 0):
             raise Exception("'tau' must be positive")
         self.tau = tau
-        self.l2axis=l2axis
+        self.l2axis = l2axis
         self.beta = 1.
-        if(Phi is None):
+        if (Phi is None):
             self.Phi = linear_operators.identity()
         else:
             self.Phi = Phi
 
     def prox(self, x, gamma):
-        xx = np.expand_dims(np.sqrt(np.sum(np.square(np.abs(x)), axis=self.l2axis)), self.l2axis)
-        return x * ( 1  -  self.tau * gamma / np.maximum(xx, self.tau * gamma)) 
+        xx = np.expand_dims(
+            np.sqrt(np.sum(np.square(np.abs(x)), axis=self.l2axis)),
+            self.l2axis)
+        return x * (1 - self.tau * gamma / np.maximum(xx, self.tau * gamma))
 
     def fun(self, x):
         return 0
@@ -393,8 +396,8 @@ class l21_norm:
     def adj_op(self, x):
         return self.Phi.adj_op(x)
 
-class translate_prox:
 
+class translate_prox:
     def __init__(self, input_prox, z):
         self.z = input_prox.dir_op(z)
         self.input_prox = input_prox

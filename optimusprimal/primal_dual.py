@@ -6,7 +6,14 @@ import time
 logger = logging.getLogger('Optimus Primal')
 
 
-def FBPD(x_init, options=None, g=None, f=None, h=None, p=None, r=None, viewer = None):
+def FBPD(x_init,
+         options=None,
+         g=None,
+         f=None,
+         h=None,
+         p=None,
+         r=None,
+         viewer=None):
     if f is None:
         f = Empty.EmptyProx()
     if g is None:
@@ -23,7 +30,18 @@ def FBPD(x_init, options=None, g=None, f=None, h=None, p=None, r=None, viewer = 
     w = r.dir_op(x) * 0
     return FBPD_warm_start(x_init, y, z, w, options, g, f, h, p, r, viewer)
 
-def FBPD_warm_start(x_init, y, z, w, options=None, g=None, f=None, h=None, p=None, r=None, viewer = None):
+
+def FBPD_warm_start(x_init,
+                    y,
+                    z,
+                    w,
+                    options=None,
+                    g=None,
+                    f=None,
+                    h=None,
+                    p=None,
+                    r=None,
+                    viewer=None):
     """Takes in an input signal with proximal operators and a gradient operator
     and returns a solution with diagnostics."""
     # default inputs
@@ -38,8 +56,12 @@ def FBPD_warm_start(x_init, y, z, w, options=None, g=None, f=None, h=None, p=Non
     if r is None:
         r = Empty.EmptyProx()
     if options is None:
-        options = {'tol': 1e-4, 'iter': 500,
-                   'update_iter': 100, 'record_iters': False}
+        options = {
+            'tol': 1e-4,
+            'iter': 500,
+            'update_iter': 100,
+            'record_iters': False
+        }
 
     # checking minimum requrements for inputs
     assert hasattr(f, 'prox')
@@ -58,9 +80,9 @@ def FBPD_warm_start(x_init, y, z, w, options=None, g=None, f=None, h=None, p=Non
     record_iters = options['record_iters']
     # step-sizes
     tau = 1 / (g.beta + 2)
-    sigmah = (1/tau - g.beta/2)/(h.beta + p.beta + r.beta)
-    sigmap = (1/tau - g.beta/2)/(h.beta + p.beta + r.beta)
-    sigmar = (1/tau - g.beta/2)/(h.beta + p.beta + r.beta)
+    sigmah = (1 / tau - g.beta / 2) / (h.beta + p.beta + r.beta)
+    sigmap = (1 / tau - g.beta / 2) / (h.beta + p.beta + r.beta)
+    sigmar = (1 / tau - g.beta / 2) / (h.beta + p.beta + r.beta)
     # initialization
     x = np.copy(x_init)
 
@@ -86,7 +108,7 @@ def FBPD_warm_start(x_init, y, z, w, options=None, g=None, f=None, h=None, p=Non
         w = w + sigmar * r.dir_op(2 * x - x_old)
         w = w - sigmar * r.prox(w / sigmar, 1. / sigmar)
         # time and criterion
-        if(record_iters):
+        if (record_iters):
             timing[it] = time.time() - t
             criter[it] = f.fun(x) + g.fun(x) + \
                 h.fun(h.dir_op(x)) + p.fun(p.dir_op(x)) + r.fun(r.dir_op(x))
@@ -99,17 +121,26 @@ def FBPD_warm_start(x_init, y, z, w, options=None, g=None, f=None, h=None, p=Non
         if np.linalg.norm(x - x_old) < tol * np.linalg.norm(x_old) and it > 10:
             logger.info('[Primal Dual] converged in %d iterations', it)
             break
-        if(update_iter >= 0):
-            if(it % update_iter == 0):
+        if (update_iter >= 0):
+            if (it % update_iter == 0):
                 logger.info('[Primal Dual] %d out of %d iterations, tol = %f',
-                            it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
+                            it, max_iter,
+                            np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
                 if viewer is not None:
                     viewer(x, it)
-        logger.debug('[Primal Dual] %d out of %d iterations, tol = %f',
-                     it, max_iter, np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
+        logger.debug('[Primal Dual] %d out of %d iterations, tol = %f', it,
+                     max_iter,
+                     np.linalg.norm(x - x_old) / np.linalg.norm(x_old))
 
     criter = criter[0:it + 1]
     timing = np.cumsum(timing[0:it + 1])
     solution = x
-    diagnostics = {'max_iter': it, 'times': timing, 'Obj_vals': criter, 'z': z, 'y': y, 'w': w}
+    diagnostics = {
+        'max_iter': it,
+        'times': timing,
+        'Obj_vals': criter,
+        'z': z,
+        'y': y,
+        'w': w
+    }
     return solution, diagnostics

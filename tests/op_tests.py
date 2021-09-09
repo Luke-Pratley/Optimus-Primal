@@ -59,7 +59,7 @@ def test_diag_matrix_op():
 def test_wav_op():
     wav = 'dirac'
     levels = 3
-    shape = (128,)
+    shape = (128, )
     op = linear_operators.db_wavelets(wav, levels, shape)
     inp = np.random.normal(0, 10., shape)
     out = op.dir_op(inp)
@@ -71,7 +71,7 @@ def test_wav_op():
     assert np.allclose(out, buff1, 1e-6)
     wav = 'db1'
     levels = 3
-    shape = (128,)
+    shape = (128, )
     op = linear_operators.db_wavelets(wav, levels, shape)
     inp = np.random.normal(0, 10., shape)
     out = op.dir_op(inp)
@@ -83,7 +83,7 @@ def test_wav_op():
     assert np.allclose(out, buff1, 1e-6)
     wav = ['db1', 'db2', 'dirac']
     levels = 3
-    shape = (128,)
+    shape = (128, )
     op = linear_operators.dictionary(wav, levels, shape)
     inp = np.random.normal(0, 10., shape)
     out = op.dir_op(inp)
