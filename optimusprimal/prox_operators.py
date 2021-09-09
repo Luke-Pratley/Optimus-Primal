@@ -229,13 +229,14 @@ class zero_prox:
     it returns the projection.
     """
 
-    def __init__(self, indices, op):
+    def __init__(self, indices, op, offset = 0):
         self.beta = 1.
         self.indices = indices
         self.op = op
+        self.offset = offset
     def prox(self, x, tau):
         buff = np.copy(x)
-        buff[self.indices] = 0
+        buff[self.indices] = self.offset
         return buff
 
     def fun(self, x):
@@ -391,3 +392,22 @@ class l21_norm:
 
     def adj_op(self, x):
         return self.Phi.adj_op(x)
+
+class translate_prox:
+
+    def __init__(self, input_prox, z):
+        self.z = input_prox.dir_op(z)
+        self.input_prox = input_prox
+        self.beta = input_prox.beta
+
+    def prox(self, x, gamma):
+        return self.input_prox.prox(x + self.z, gamma) - self.z
+
+    def fun(self, x):
+        return self.input_prox.fun(x + self.z)
+
+    def dir_op(self, x):
+        return self.input_prox.dir_op(x)
+
+    def adj_op(self, x):
+        return self.input_prox.adj_op(x)
