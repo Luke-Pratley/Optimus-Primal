@@ -15,3 +15,6 @@ To learn more about proximal operators and algorithms, visit [proximity operator
 - Scipy
 ### Optional
 - Matplotlib (only for examples)
+## Install
+`pip install --user optimusprimal`
+
